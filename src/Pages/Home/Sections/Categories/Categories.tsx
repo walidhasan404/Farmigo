@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Categories = () => {
     return (
 
-        <div className="grid grid-cols-3 md:max-h-[500px] max-h-[300px] gap-2 md:gap-3 max-w-screen-xl mx-auto my-28">
+        <div className="grid grid-cols-3 md:max-h-[500px] max-h-[300px] gap-2 md:gap-3 max-w-screen-xl mx-auto">
             {/* col 1 */}
             {/* Vegetable Farming */}
             <Link to={'/'} className="block">
