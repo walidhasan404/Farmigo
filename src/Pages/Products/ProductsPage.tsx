@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { dummyProducts, Product } from "../../data/products";
 import { Link } from "react-router-dom";
 
@@ -9,7 +9,9 @@ const ProductsPage = () => {
     const [sort, setSort] = useState<string>("");
     const [isDropdown, setIsDropdown] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
     const productsPerPage = 8;
+    const observer = useRef<IntersectionObserver | null>(null);
 
     const categories = ["All", "Seeds", "Tools", "Fertilizers", "Irrigation", "Machinery"];
 
@@ -37,7 +39,6 @@ const ProductsPage = () => {
         };
     }, []);
 
-
     const filteredProducts = products
         .filter((product) => {
             return product.name.toLowerCase().includes(search.toLowerCase());
@@ -55,24 +56,38 @@ const ProductsPage = () => {
         });
 
     const indexOfLastProduct = currentPage * productsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const currentProducts = filteredProducts.slice(0, indexOfLastProduct);
 
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-
-    const handleClickNext = () => {
-        if (currentPage < totalPages) setCurrentPage((prevPage) => prevPage + 1);
+    const loadMoreProducts = () => {
+        if (!isLoading && currentPage * productsPerPage < filteredProducts.length) {
+            setIsLoading(true);
+            setTimeout(() => {
+                setCurrentPage((prevPage) => prevPage + 1);
+                setIsLoading(false);
+            }, 1000);
+        }
     };
 
-    const handleClickPrevious = () => {
-        if (currentPage > 1) setCurrentPage((prevPage) => prevPage - 1);
-    }
+    useEffect(() => {
+        if (observer.current) observer.current.disconnect();
+
+        const intersectionObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                loadMoreProducts();
+            }
+        });
+
+        if (document.getElementById("scroll-anchor")) {
+            intersectionObserver.observe(document.getElementById("scroll-anchor")!);
+        }
+
+        observer.current = intersectionObserver;
+
+        return () => observer.current?.disconnect();
+    }, [currentPage, filteredProducts]);
 
     return (
         <div className="min-h-screen p-6">
-            <h1 className="text-center text-4xl font-extrabold text-gray-900 mb-10">
-                Explore Our Products
-            </h1>
 
             {/* Search */}
             <div className="flex flex-col sm:flex-row items-center mb-8">
@@ -85,71 +100,73 @@ const ProductsPage = () => {
                 />
                 <button
                     onClick={() => setSearch(search)}
-                    className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 rounded w-full sm:w-1/4 hover:bg-blue-700 transition duration-300"
+                    className="bg-gradient-to-r from-green-400 to-blue-500 text-white p-3 rounded w-full sm:w-1/4 hover:opacity-90 transition duration-300"
                 >
                     Search
                 </button>
             </div>
 
-            {/* Category */}
-            <div className="flex justify-center mb-8 space-x-3">
-                {categories.map((cat) => (
-                    <button
-                        key={cat}
-                        onClick={() => setCategory(cat)}
-                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${category === cat
-                            ? "bg-blue-500 text-white shadow-lg"
-                            : "bg-gray-200 text-gray-800 hover:bg-blue-200"
-                            }`}
-                    >
-                        {cat}
-                    </button>
-                ))}
-            </div>
+            <div className="lg:flex lg:justify-evenly p-4">
+                {/* Category */}
+                <div className="flex justify-center mb-8 space-x-3">
+                    {categories.map((cat) => (
+                        <button
+                            key={cat}
+                            onClick={() => setCategory(cat)}
+                            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${category === cat
+                                ? "bg-green-500 text-white shadow-lg"
+                                : "bg-gray-200 text-gray-800 hover:bg-green-200"
+                                }`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
 
-            {/* Sorting */}
-            <div className="flex items-center justify-center mb-8">
-                <label className="mr-4 font-medium text-gray-700">Sort by price:</label>
-                <div className="dropdown-container relative">
-                    <button
-                        onClick={() => setIsDropdown(!isDropdown)}
-                        className="bg-gray-200 text-gray-700 px-4 py-2 rounded-full focus:outline-none focus:bg-gray-300"
-                    >
-                        {sort === "asc" ? "Low to High" : sort === "desc" ? "High to Low" : "None"}
-                    </button>
-                    {isDropdown && (
-                        <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
-                            <ul className="py-2">
-                                <li
-                                    onClick={() => {
-                                        setSort("");
-                                        setIsDropdown(false);
-                                    }}
-                                    className="cursor-pointer px-4 py-2 hover:bg-gray-200"
-                                >
-                                    None
-                                </li>
-                                <li
-                                    onClick={() => {
-                                        setSort("asc");
-                                        setIsDropdown(false);
-                                    }}
-                                    className="cursor-pointer px-4 py-2 hover:bg-gray-200"
-                                >
-                                    Low to High
-                                </li>
-                                <li
-                                    onClick={() => {
-                                        setSort("desc");
-                                        setIsDropdown(false);
-                                    }}
-                                    className="cursor-pointer px-4 py-2 hover:bg-gray-200"
-                                >
-                                    High to Low
-                                </li>
-                            </ul>
-                        </div>
-                    )}
+                {/* Sorting */}
+                <div className="flex items-center justify-center mb-8">
+                    <label className="mr-4 font-medium text-gray-700">Sort by price:</label>
+                    <div className="dropdown-container relative">
+                        <button
+                            onClick={() => setIsDropdown(!isDropdown)}
+                            className="bg-gray-200 text-gray-700 px-4 py-2 rounded-full focus:outline-none focus:bg-gray-300"
+                        >
+                            {sort === "asc" ? "Low to High" : sort === "desc" ? "High to Low" : "None"}
+                        </button>
+                        {isDropdown && (
+                            <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                                <ul className="py-2">
+                                    <li
+                                        onClick={() => {
+                                            setSort("");
+                                            setIsDropdown(false);
+                                        }}
+                                        className="cursor-pointer px-4 py-2 hover:bg-gray-200"
+                                    >
+                                        None
+                                    </li>
+                                    <li
+                                        onClick={() => {
+                                            setSort("asc");
+                                            setIsDropdown(false);
+                                        }}
+                                        className="cursor-pointer px-4 py-2 hover:bg-gray-200"
+                                    >
+                                        Low to High
+                                    </li>
+                                    <li
+                                        onClick={() => {
+                                            setSort("desc");
+                                            setIsDropdown(false);
+                                        }}
+                                        className="cursor-pointer px-4 py-2 hover:bg-gray-200"
+                                    >
+                                        High to Low
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -160,48 +177,42 @@ const ProductsPage = () => {
                         {currentProducts.map((product: Product) => (
                             <li
                                 key={product.id}
-                                className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-transform transform hover:scale-105 duration-300"
+                                className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-transform transform duration-300"
                             >
-                                <img
-                                    className="w-full h-48 object-cover"
-                                    src={product.image}
-                                    alt={product.name}
-                                    width="100"
-                                />
-                                <div className="p-4">
+                                <div className="relative overflow-hidden rounded-t-lg">
+                                    <img
+                                        className="w-full h-48 object-cover"
+                                        src={product.image}
+                                        alt={product.name}
+                                    />
+                                </div>
+                                <div className="p-4 text-center">
                                     <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
+                                    <p className="text-gray-500 text-sm mb-2">{product.category}</p>
+                                    <div className="flex justify-center items-center mb-2">
+                                        {Array.from({ length: 5 }, (_, i) => (
+                                            <span
+                                                key={i}
+                                                className={`text-lg ${i < product.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                                            >
+                                                ★
+                                            </span>
+                                        ))}
+                                    </div>
                                     <p className="text-gray-700 mt-2">Price: ${product.price.toFixed(2)}</p>
                                 </div>
-                                <div>
+                                <div className="px-4 pb-4">
                                     <Link to={`/products/${product.id}`}>
-                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2 w-full hover:bg-blue-600 transition duration-300 ease-in-out">
-                                            Details
+                                        <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full w-full hover:opacity-90 transition duration-300 ease-in-out">
+                                            View Details
                                         </button>
                                     </Link>
                                 </div>
                             </li>
                         ))}
                     </ul>
-                    {/* Pagination */}
-                    <div className="flex justify-center mt-6">
-                        <button
-                            onClick={handleClickPrevious}
-                            disabled={currentPage === 1}
-                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-l-full hover:bg-gray-300 disabled:opacity-50"
-                        >
-                            Previous
-                        </button>
-                        <span className="px-4 py-2 text-gray-700">
-                            Page {currentPage} of {totalPages}
-                        </span>
-                        <button
-                            onClick={handleClickNext}
-                            disabled={currentPage === totalPages}
-                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-r-full hover:bg-gray-300 disabled:opacity-50"
-                        >
-                            Next
-                        </button>
-                    </div>
+                    <div id="scroll-anchor" className="h-10"></div>
+                    {isLoading && <p className="text-center text-gray-600 text-lg">Loading more products...</p>}
                 </>
             ) : (
                 <p className="text-center text-gray-600 text-lg">Loading products...</p>
