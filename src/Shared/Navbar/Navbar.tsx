@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 
 
 const Navbar = () => {
     return (
-        <nav className="bg-[#FCF8F1] bg-opacity-30">
+        <nav className="">
             <div className="px-4 mx-auto sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16 lg:h-20">
                     <div className="flex-shrink-0">
@@ -20,7 +21,7 @@ const Navbar = () => {
                         type="button"
                         className="inline-flex p-2 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100"
                     >
-                        {/* <!-- Menu open: "hidden", Menu closed: "block" --> */}
+                        {/*  Menu open: "hidden", Menu closed: "block"  */}
                         <svg
                             className="block w-6 h-6"
                             xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +37,7 @@ const Navbar = () => {
                             ></path>
                         </svg>
 
-                        {/* <!-- Menu open: "block", Menu closed: "hidden" --> */}
+                        {/* Menu open: "block", Menu closed: "hidden" */}
                         <svg
                             className="hidden w-6 h-6"
                             xmlns="http://www.w3.org/2000/svg"
@@ -54,41 +55,37 @@ const Navbar = () => {
                     </button>
 
                     <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10">
-                        <a
-                            href="#"
-                            title=""
+                        <Link
+                            to={'/'}
                             className="text-base text-black transition-all duration-200 hover:text-opacity-80"
                         >
                             {" "}
                             Home{" "}
-                        </a>
+                        </Link>
 
-                        <a
-                            href="#"
-                            title=""
+                        <Link
+                            to={'/Products'}
                             className="text-base text-black transition-all duration-200 hover:text-opacity-80"
                         >
                             {" "}
                             Products{" "}
-                        </a>
+                        </Link>
 
-                        <a
-                            href="#"
-                            title=""
+                        <Link to={'/'}
+
                             className="text-base text-black transition-all duration-200 hover:text-opacity-80"
                         >
                             {" "}
                             Blogs{" "}
-                        </a>
+                        </Link >
 
-                        <a
-                            href="#"
-                            title=""
+                        <Link to={'/'}
+
                             className="text-base text-black transition-all duration-200 hover:text-opacity-80"
                         >
                             {" "}
                             Weather{" "}
-                        </a>
+                        </Link>
                     </div>
 
                     <a
