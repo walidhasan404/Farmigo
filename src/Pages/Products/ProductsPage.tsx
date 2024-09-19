@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { dummyProducts, Product } from "../../data/products";
+import { Link } from "react-router-dom";
 
 const ProductsPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -27,13 +28,15 @@ const ProductsPage = () => {
             if (!target.closest(".dropdown-container")) {
                 setIsDropdown(false);
             }
-            document.addEventListener("click", handleClickOutside);
+        };
 
-            return () => {
-                document.removeEventListener("click", handleClickOutside);
-            }
-        }
-    })
+        document.addEventListener("click", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
+
 
     const filteredProducts = products
         .filter((product) => {
@@ -168,6 +171,13 @@ const ProductsPage = () => {
                                 <div className="p-4">
                                     <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
                                     <p className="text-gray-700 mt-2">Price: ${product.price.toFixed(2)}</p>
+                                </div>
+                                <div>
+                                    <Link to={`/products/${product.id}`}>
+                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2 w-full hover:bg-blue-600 transition duration-300 ease-in-out">
+                                            Details
+                                        </button>
+                                    </Link>
                                 </div>
                             </li>
                         ))}

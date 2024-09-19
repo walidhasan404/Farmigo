@@ -4,6 +4,9 @@ export type Product = {
     price: number;
     image: string;
     category: string;
+    description: string;
+    stock: number;
+    rating: number;
 }
 
 export const dummyProducts: Product[] = [
@@ -13,6 +16,9 @@ export const dummyProducts: Product[] = [
         price: 10.99,
         image: 'https://via.placeholder.com/150?text=Tomato+Seeds',
         category: 'Seeds',
+        description: 'High-quality organic tomato seeds for healthy and flavorful tomatoes.',
+        stock: 100,
+        rating: 4.7
     },
     {
         id: 2,
@@ -20,6 +26,9 @@ export const dummyProducts: Product[] = [
         price: 12.49,
         image: 'https://via.placeholder.com/150?text=Wheat+Seeds',
         category: 'Seeds',
+        description: 'Top-grade wheat seeds suitable for large-scale farming.',
+        stock: 200,
+        rating: 4.5
     },
     {
         id: 3,
@@ -27,6 +36,9 @@ export const dummyProducts: Product[] = [
         price: 8.99,
         image: 'https://via.placeholder.com/150?text=Potato+Seed+Tubers',
         category: 'Seeds',
+        description: 'Seed tubers for growing healthy and high-yield potato plants.',
+        stock: 150,
+        rating: 4.3
     },
     {
         id: 4,
@@ -34,6 +46,9 @@ export const dummyProducts: Product[] = [
         price: 25.99,
         image: 'https://via.placeholder.com/150?text=Natural+Fertilizer',
         category: 'Fertilizers',
+        description: '100% natural fertilizer for organic farming and home gardens.',
+        stock: 75,
+        rating: 4.8
     },
     {
         id: 5,
@@ -41,6 +56,9 @@ export const dummyProducts: Product[] = [
         price: 18.99,
         image: 'https://via.placeholder.com/150?text=Organic+Compost',
         category: 'Fertilizers',
+        description: 'Rich, organic compost to enrich your soil for better plant growth.',
+        stock: 120,
+        rating: 4.6
     },
     {
         id: 6,
@@ -48,6 +66,9 @@ export const dummyProducts: Product[] = [
         price: 14.99,
         image: 'https://via.placeholder.com/150?text=Corn+Seeds',
         category: 'Seeds',
+        description: 'Hybrid corn seeds designed for high yield and disease resistance.',
+        stock: 80,
+        rating: 4.4
     },
     {
         id: 7,
@@ -55,6 +76,9 @@ export const dummyProducts: Product[] = [
         price: 79.99,
         image: 'https://via.placeholder.com/150?text=Irrigation+Kit',
         category: 'Irrigation',
+        description: 'Complete drip irrigation kit for efficient water management.',
+        stock: 50,
+        rating: 4.9
     },
     {
         id: 8,
@@ -62,6 +86,9 @@ export const dummyProducts: Product[] = [
         price: 6.99,
         image: 'https://via.placeholder.com/150?text=Lettuce+Seeds',
         category: 'Seeds',
+        description: 'High-quality lettuce seeds grown without pesticides.',
+        stock: 180,
+        rating: 4.2
     },
     {
         id: 9,
@@ -69,6 +96,9 @@ export const dummyProducts: Product[] = [
         price: 15.99,
         image: 'https://via.placeholder.com/150?text=Bio-Pesticides',
         category: 'Pesticides',
+        description: 'Eco-friendly bio-pesticides for safe and effective pest control.',
+        stock: 90,
+        rating: 4.7
     },
     {
         id: 10,
@@ -76,6 +106,9 @@ export const dummyProducts: Product[] = [
         price: 39.99,
         image: 'https://via.placeholder.com/150?text=Mulching+Film',
         category: 'Mulching',
+        description: 'Durable mulching film for weed control and soil moisture retention.',
+        stock: 40,
+        rating: 4.6
     },
     {
         id: 11,
@@ -83,6 +116,9 @@ export const dummyProducts: Product[] = [
         price: 29.99,
         image: 'https://via.placeholder.com/150?text=Hydroponic+Solution',
         category: 'Nutrients',
+        description: 'Balanced nutrient solution for hydroponic systems.',
+        stock: 110,
+        rating: 4.5
     },
     {
         id: 12,
@@ -90,6 +126,9 @@ export const dummyProducts: Product[] = [
         price: 12.99,
         image: 'https://via.placeholder.com/150?text=Garden+Shovel',
         category: 'Tools',
+        description: 'Ergonomic garden shovel for digging, planting, and soil preparation.',
+        stock: 130,
+        rating: 4.4
     },
     {
         id: 13,
@@ -97,6 +136,9 @@ export const dummyProducts: Product[] = [
         price: 7.99,
         image: 'https://via.placeholder.com/150?text=Strawberry+Seeds',
         category: 'Seeds',
+        description: 'Organic strawberry seeds for growing sweet and juicy strawberries.',
+        stock: 170,
+        rating: 4.3
     },
     {
         id: 14,
@@ -104,6 +146,9 @@ export const dummyProducts: Product[] = [
         price: 5500.00,
         image: 'https://via.placeholder.com/150?text=Mini+Tractor',
         category: 'Machinery',
+        description: 'Compact and powerful mini tractor for small to medium-sized farms.',
+        stock: 10,
+        rating: 4.9
     },
     {
         id: 15,
@@ -111,6 +156,9 @@ export const dummyProducts: Product[] = [
         price: 49.99,
         image: 'https://via.placeholder.com/150?text=Greenhouse+Sheeting',
         category: 'Greenhouse',
+        description: 'Durable plastic sheeting for greenhouse construction and protection.',
+        stock: 60,
+        rating: 4.6
     },
     {
         id: 16,
@@ -118,6 +166,9 @@ export const dummyProducts: Product[] = [
         price: 9.99,
         image: 'https://via.placeholder.com/150?text=pH+Testing+Kit',
         category: 'Tools',
+        description: 'Easy-to-use kit for testing soil pH levels for optimal plant growth.',
+        stock: 140,
+        rating: 4.5
     },
     {
         id: 17,
@@ -125,6 +176,9 @@ export const dummyProducts: Product[] = [
         price: 89.99,
         image: 'https://via.placeholder.com/150?text=Wheelbarrow',
         category: 'Tools',
+        description: 'Heavy-duty wheelbarrow for easy transport of soil, compost, and tools.',
+        stock: 30,
+        rating: 4.8
     },
     {
         id: 18,
@@ -132,6 +186,9 @@ export const dummyProducts: Product[] = [
         price: 59.99,
         image: 'https://via.placeholder.com/150?text=Seed+Planter',
         category: 'Tools',
+        description: 'Handheld seed planter for precision planting in garden beds or fields.',
+        stock: 70,
+        rating: 4.3
     },
     {
         id: 19,
@@ -139,6 +196,9 @@ export const dummyProducts: Product[] = [
         price: 199.99,
         image: 'https://via.placeholder.com/150?text=Rainwater+Tank',
         category: 'Irrigation',
+        description: 'Large capacity rainwater harvesting tank for irrigation and water storage.',
+        stock: 20,
+        rating: 4.7
     },
     {
         id: 20,
@@ -146,7 +206,8 @@ export const dummyProducts: Product[] = [
         price: 45.99,
         image: 'https://via.placeholder.com/150?text=Crop+Netting',
         category: 'Mulching',
-    },
+        description: 'Protective netting for crops to prevent damage from pests and birds.',
+        stock: 50,
+        rating: 4.6
+    }
 ];
-
-  
