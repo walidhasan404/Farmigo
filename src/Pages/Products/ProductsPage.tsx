@@ -2,8 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { dummyProducts, Product } from "../../data/products";
 import { Link } from "react-router-dom";
 
-// https://farmigo-server.vercel.app/api/v1/products
-
 const ProductsPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [search, setSearch] = useState<string>("");
