@@ -1,9 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Oath from '../../../Components/Oath';
 
 const RegisterPage: React.FC = () => {
+
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-50">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
         <h2 className="text-2xl font-semibold text-center text-green-600 mb-6">Create Your Farmigo Account</h2>
 
@@ -46,14 +50,7 @@ const RegisterPage: React.FC = () => {
         </button>
 
         {/* Google Signup Button */}
-        <button className="w-full  text-green-700 py-2 rounded-md hover:shadow-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center">
-          <img
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-            alt="Google Logo"
-            className="w-5 h-5 mr-2"
-          />
-          Sign Up with Google
-        </button>
+       <Oath/>
 
         {/* Already have an account */}
         <p className="mt-4 text-sm text-center text-gray-600">
