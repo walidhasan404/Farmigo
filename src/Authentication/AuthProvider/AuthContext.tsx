@@ -35,8 +35,6 @@ export const useAuth = (): AuthContextType => {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>();
 
-  console.log(user, "User from Context");
-
   const login = (userData: User) => {
     setUser(userData);
   };
