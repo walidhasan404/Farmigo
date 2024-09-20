@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { dummyProducts, Product } from "../../data/products";
 
+// https://farmigo-server.vercel.app/api/v1/products
+
 const ProductDetails = () => {
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<Product | null>(null);
@@ -66,7 +68,7 @@ const ProductDetails = () => {
                     </div>
                     <img
                         alt="product"
-                        className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded-lg"
+                        className="lg:w-1/2 w-full lg:h-96 my-auto h-64 object-center rounded-lg"
                         src={product?.image}
                     />
                 </div>

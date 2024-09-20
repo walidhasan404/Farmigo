@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { dummyProducts, Product } from "../../data/products";
 import { Link } from "react-router-dom";
 
+// https://farmigo-server.vercel.app/api/v1/products
+
 const ProductsPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [search, setSearch] = useState<string>("");
@@ -13,7 +15,7 @@ const ProductsPage = () => {
     const productsPerPage = 8;
     const observer = useRef<IntersectionObserver | null>(null);
 
-    const categories = ["All", "Seeds", "Tools", "Fertilizers", "Irrigation", "Machinery"];
+    const categories = ["All", "Dairy", "Vegetables", "Grains & Cereal", "Fruits", "Honey & Jam"];
 
     useEffect(() => {
         const fetchProducts = () => {
@@ -181,7 +183,7 @@ const ProductsPage = () => {
                             >
                                 <div className="relative overflow-hidden rounded-t-lg">
                                     <img
-                                        className="w-full h-48 object-cover"
+                                        className="w-full h-48"
                                         src={product.image}
                                         alt={product.name}
                                     />
