@@ -1,6 +1,6 @@
 
 
-const SignIn = () => {
+const ProductsSections = () => {
     return (
         <div>
             
@@ -8,4 +8,4 @@ const SignIn = () => {
     );
 };
 
-export default SignIn;
+export default ProductsSections;

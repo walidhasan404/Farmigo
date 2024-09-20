@@ -7,7 +7,7 @@ const Categories = () => {
         <div className="grid grid-cols-3 md:max-h-[500px] max-h-[300px] gap-2 md:gap-3 max-w-screen-xl mx-auto">
             {/* col 1 */}
             {/* Vegetable Farming */}
-            <Link to={'/'} className="block">
+            <Link to={'/products/vegetable'} className="block">
                 <div className="rounded-xl relative h-full overflow-hidden group">
                     <img
                         className="w-full h-full object-cover rounded-xl transform group-hover:scale-105 transition-transform duration-300 ease-in-out"
@@ -26,7 +26,7 @@ const Categories = () => {
             {/* col 2 */}
             <div className="rounded-xl grid grid-rows-2 gap-3">
                 {/* Grain & Cereal Farming  */}
-                <Link to={'/'} className="block">
+                <Link to={'/products/grain & cereal'} className="block">
                     <div className="rounded-xl relative md:h-[250px] h-[150px] overflow-hidden group">
                         <img
                             className="w-full h-full object-cover rounded-xl transform group-hover:scale-105 transition-transform duration-300 ease-in-out"
@@ -41,7 +41,7 @@ const Categories = () => {
                 </Link>
 
                 {/* Poultry Farming */}
-                <Link to={'/'} className="block">
+                <Link to={'/products/poultry'} className="block">
                     <div className="rounded-xl relative md:h-[250px] h-[150px] overflow-hidden group">
                         <img
                             className="w-full h-full object-cover rounded-xl transform group-hover:scale-105 transition-transform duration-300 ease-in-out"
@@ -58,7 +58,7 @@ const Categories = () => {
 
             {/* col 3 */}
             <div className="rounded-xl grid grid-rows-2 gap-3">
-                <Link to={'/'} className="block">
+                <Link to={'/products/fruit'} className="block">
                     <div className="rounded-xl relative md:h-[250px] h-[150px] overflow-hidden group">
                         <img
                             className="w-full h-full object-cover rounded-xl transform group-hover:scale-105 transition-transform duration-300 ease-in-out"
@@ -72,7 +72,7 @@ const Categories = () => {
                     </div>
                 </Link>
 
-                <Link to={'/'} className="block">
+                <Link to={'/products/dairy'} className="block">
                     <div className="rounded-xl relative md:h-[250px] h-[150px] overflow-hidden group">
                         <img
                             className="w-full h-full object-cover rounded-xl transform group-hover:scale-105 transition-transform duration-300 ease-in-out"
