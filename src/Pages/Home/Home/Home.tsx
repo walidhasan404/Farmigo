@@ -1,5 +1,6 @@
 import Hero from "../Sections/Hero/Hero";
 import Categories from "../Sections/Categories/Categories";
+import Blogs from "../Sections/Blogs/Blogs";
 
 
 const Home = () => {
@@ -7,6 +8,7 @@ const Home = () => {
         <div >
             <Hero />
             <Categories />
+            <Blogs />
         </div>
     );
 };
