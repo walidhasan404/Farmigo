@@ -1,48 +1,58 @@
-import { useEffect, useState, useRef } from "react";
-import { dummyProducts, Product } from "../../data/products";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const ProductsPage = () => {
+interface Product {
+    _id: string;
+    product_name: string;
+    category: string;
+    price: number;
+    quantity: string;
+    description: string;
+    rating: string;
+    images: string[];
+}
+
+const ProductsPage: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [search, setSearch] = useState<string>("");
     const [category, setCategory] = useState<string>("All");
-    const [sort, setSort] = useState<string>("");
-    const [isDropdown, setIsDropdown] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
-    const productsPerPage = 8;
-    const observer = useRef<IntersectionObserver | null>(null);
+    const [sortOption, setSortOption] = useState<string>("price-asc");
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [dropdownOpen, setDropdownOpen] = useState<boolean>(false); // For dropdown visibility
 
     const categories = ["All", "Dairy", "Vegetables", "Grains & Cereal", "Fruits", "Honey & Jam"];
+    const sortOptions = [
+        { value: "price-asc", label: "Price: Low to High" },
+        { value: "price-desc", label: "Price: High to Low" },
+        { value: "rating-asc", label: "Rating: Low to High" },
+        { value: "rating-desc", label: "Rating: High to Low" },
+    ];
 
     useEffect(() => {
-        const fetchProducts = () => {
-            setTimeout(() => {
-                setProducts(dummyProducts);
-            }, 1000);
-        };
-        fetchProducts();
-    }, []);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            const target = event.target as HTMLElement;
-            if (!target.closest(".dropdown-container")) {
-                setIsDropdown(false);
+        const fetchProducts = async () => {
+            try {
+                const res = await fetch('https://farmio-app.vercel.app/api/v1/products');
+                const data = await res.json();
+                if (data.success) {
+                    setProducts(data.data);
+                } else {
+                    setError('Failed to fetch products');
+                }
+            } catch (err) {
+                setError('An error occurred while fetching data.');
+            } finally {
+                setLoading(false);
             }
         };
 
-        document.addEventListener("click", handleClickOutside);
-
-        return () => {
-            document.removeEventListener("click", handleClickOutside);
-        };
+        fetchProducts();
     }, []);
 
     const filteredProducts = products
-        .filter((product) => {
-            return product.name.toLowerCase().includes(search.toLowerCase());
-        })
+        .filter((product) =>
+            product.product_name.toLowerCase().includes(search.toLowerCase())
+        )
         .filter((product) => {
             if (category === "All") {
                 return true;
@@ -50,72 +60,45 @@ const ProductsPage = () => {
             return product.category === category;
         })
         .sort((a, b) => {
-            if (sort === "asc") return a.price - b.price;
-            if (sort === "desc") return b.price - a.price;
-            return 0;
-        });
-
-    const indexOfLastProduct = currentPage * productsPerPage;
-    const currentProducts = filteredProducts.slice(0, indexOfLastProduct);
-
-    const loadMoreProducts = () => {
-        if (!isLoading && currentPage * productsPerPage < filteredProducts.length) {
-            setIsLoading(true);
-            setTimeout(() => {
-                setCurrentPage((prevPage) => prevPage + 1);
-                setIsLoading(false);
-            }, 1000);
-        }
-    };
-
-    useEffect(() => {
-        if (observer.current) observer.current.disconnect();
-
-        const intersectionObserver = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                loadMoreProducts();
+            switch (sortOption) {
+                case "price-asc":
+                    return a.price - b.price;
+                case "price-desc":
+                    return b.price - a.price;
+                case "rating-asc":
+                    return parseFloat(a.rating) - parseFloat(b.rating);
+                case "rating-desc":
+                    return parseFloat(b.rating) - parseFloat(a.rating);
+                default:
+                    return 0;
             }
         });
 
-        if (document.getElementById("scroll-anchor")) {
-            intersectionObserver.observe(document.getElementById("scroll-anchor")!);
-        }
-
-        observer.current = intersectionObserver;
-
-        return () => observer.current?.disconnect();
-    }, [currentPage, filteredProducts]);
+    if (loading) return <p className="text-center text-lg">Loading...</p>;
+    if (error) return <p className="text-center text-red-500">{error}</p>;
 
     return (
-        <div className="min-h-screen p-6">
+        <div className="p-6 bg-white min-h-screen">
 
-            {/* Search */}
-            <div className="flex flex-col sm:flex-row items-center mb-8">
+            <div className="flex flex-col gap-4 md:flex-row md:space-x-6 items-center justify-between mb-6 lg:mb-8">
+                {/* Search Input */}
                 <input
                     type="text"
+                    placeholder="Search products..."
+                    className="flex-grow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow transition-all mb-4 md:mb-0"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search products..."
-                    className="p-3 border border-gray-300 rounded w-full sm:w-3/4 mb-4 sm:mb-0 sm:mr-4"
                 />
-                <button
-                    onClick={() => setSearch(search)}
-                    className="bg-gradient-to-r from-green-400 to-blue-500 text-white p-3 rounded w-full sm:w-1/4 hover:opacity-90 transition duration-300"
-                >
-                    Search
-                </button>
-            </div>
 
-            <div className="lg:flex lg:justify-evenly p-4">
-                {/* Category */}
-                <div className="flex justify-center mb-8 space-x-3">
+                {/* Category Buttons */}
+                <div className="flex space-x-3">
                     {categories.map((cat) => (
                         <button
                             key={cat}
                             onClick={() => setCategory(cat)}
                             className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${category === cat
-                                ? "bg-green-500 text-white shadow-lg"
-                                : "bg-gray-200 text-gray-800 hover:bg-green-200"
+                                    ? "bg-blue-500 text-white shadow-lg scale-105" // Active state: Bold blue
+                                    : "bg-blue-100 text-blue-600 hover:bg-blue-200" // Inactive state: Soft blue with hover effect
                                 }`}
                         >
                             {cat}
@@ -123,101 +106,65 @@ const ProductsPage = () => {
                     ))}
                 </div>
 
-                {/* Sorting */}
-                <div className="flex items-center justify-center mb-8">
-                    <label className="mr-4 font-medium text-gray-700">Sort by price:</label>
-                    <div className="dropdown-container relative">
-                        <button
-                            onClick={() => setIsDropdown(!isDropdown)}
-                            className="bg-gray-200 text-gray-700 px-4 py-2 rounded-full focus:outline-none focus:bg-gray-300"
-                        >
-                            {sort === "asc" ? "Low to High" : sort === "desc" ? "High to Low" : "None"}
-                        </button>
-                        {isDropdown && (
-                            <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
-                                <ul className="py-2">
-                                    <li
-                                        onClick={() => {
-                                            setSort("");
-                                            setIsDropdown(false);
-                                        }}
-                                        className="cursor-pointer px-4 py-2 hover:bg-gray-200"
-                                    >
-                                        None
-                                    </li>
-                                    <li
-                                        onClick={() => {
-                                            setSort("asc");
-                                            setIsDropdown(false);
-                                        }}
-                                        className="cursor-pointer px-4 py-2 hover:bg-gray-200"
-                                    >
-                                        Low to High
-                                    </li>
-                                    <li
-                                        onClick={() => {
-                                            setSort("desc");
-                                            setIsDropdown(false);
-                                        }}
-                                        className="cursor-pointer px-4 py-2 hover:bg-gray-200"
-                                    >
-                                        High to Low
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                    </div>
+                {/* Custom Sort Dropdown */}
+                <div className="relative">
+                    <button
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                        className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-left shadow bg-white"
+                    >
+                        {sortOptions.find(option => option.value === sortOption)?.label}
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute left-0 right-0 bg-white border rounded-lg shadow-lg mt-2 z-10">
+                            {sortOptions.map((option) => (
+                                <button
+                                    key={option.value}
+                                    onClick={() => {
+                                        setSortOption(option.value);
+                                        setDropdownOpen(false);
+                                    }}
+                                    className={`w-full text-left p-3 hover:bg-gray-100 ${sortOption === option.value ? "bg-gray-100 font-bold" : ""
+                                        }`}
+                                >
+                                    {option.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Products */}
-            {currentProducts.length > 0 ? (
-                <>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {currentProducts.map((product: Product) => (
-                            <li
-                                key={product.id}
-                                className="bg-white border border-gray-200 rounded-lg overflow-hidden transition-transform transform duration-300"
-                            >
-                                <div className="relative overflow-hidden rounded-t-lg">
-                                    <img
-                                        className="w-full h-48"
-                                        src={product.image}
-                                        alt={product.name}
-                                    />
-                                </div>
-                                <div className="p-4 text-center">
-                                    <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-                                    <p className="text-gray-500 text-sm mb-2">{product.category}</p>
-                                    <div className="flex justify-center items-center mb-2">
-                                        {Array.from({ length: 5 }, (_, i) => (
-                                            <span
-                                                key={i}
-                                                className={`text-lg ${i < product.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                                            >
-                                                ★
-                                            </span>
-                                        ))}
-                                    </div>
-                                    <p className="text-gray-700 mt-2">Price: ${product.price.toFixed(2)}</p>
-                                </div>
-                                <div className="px-4 pb-4">
-                                    <Link to={`/products/${product.id}`}>
-                                        <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full w-full hover:opacity-90 transition duration-300 ease-in-out">
-                                            View Details
-                                        </button>
-                                    </Link>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                    <div id="scroll-anchor" className="h-10"></div>
-                    {isLoading && <p className="text-center text-gray-600 text-lg">Loading more products...</p>}
-                </>
-            ) : (
-                <p className="text-center text-gray-600 text-lg">Loading products...</p>
-            )}
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => (
+                    <div key={product._id} className="bg-white rounded-lg overflow-hidden border transform transition duration-500 ease-in-out">
+                        <div className="relative">
+                            <img
+                                src={product.images[0]}
+                                alt={product.product_name}
+                                className="w-full h-64 object-cover"
+                            />
+                            <div className="absolute top-2 left-2 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                                {product.rating} ⭐
+                            </div>
+                        </div>
+                        <div className="p-6">
+                            <h2 className="text-2xl text-center font-bold text-gray-800">{product.product_name}</h2>
+                            <p className="text-gray-500 text-center mt-2">{product.category}</p>
+                            <p className="text-green-600 text-center font-semibold text-lg mt-2">${product.price.toFixed(2)}</p>
+
+                            <Link to={`/products/${product._id}`}>
+                                <button className="mt-6 w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white py-3 rounded-full shadow-lg hover:from-blue-500 hover:to-blue-700 transition-all duration-300 ease-in-out transform hover:scale-105 font-bold tracking-wide">
+                                    View Details
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
+
     );
 };
 
