@@ -11,6 +11,7 @@ import Grain from "../Pages/Home/Sections/Categories/Grain/Grain";
 import Dairy from "../Pages/Home/Sections/Categories/Dairy/Dairy";
 import Poultry from "../Pages/Home/Sections/Categories/Poultry/Poultry";
 import Fruit from "../Pages/Home/Sections/Categories/Fruit/Fruit";
+import Weather from "../Pages/Weather/Weather";
 
 
 
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
             {
                 path: "/products/:id",
                 element: <ProductDetails />
+            },
+            {
+                path: "/weather",
+                element: <Weather />
             },
         ]
     },
