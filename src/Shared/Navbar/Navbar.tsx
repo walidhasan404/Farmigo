@@ -84,7 +84,7 @@ const Navbar = () => {
             </Link>
 
             <Link
-              to={"/"}
+              to={"/weather"}
               className="text-base text-black transition-all duration-200 hover:text-opacity-80"
             >
               {" "}
