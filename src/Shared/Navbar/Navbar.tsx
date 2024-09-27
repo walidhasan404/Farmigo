@@ -7,7 +7,7 @@ import UserNavigationPanel from "./UserNavigationPanel";
 const Navbar = () => {
 const{userAuth} =useContext(AuthContext)
 const [userNavPanel, setUserNavPanel] =useState(false)
- // console.log(userAuth.data.profile_img);
+ //console.log(userAuth.data.profile_img);
  const handleUserNavPanel = () =>{
   setUserNavPanel(prev => !prev)
 }

@@ -29,7 +29,7 @@ interface AuthProviderProps {
        
       useEffect(()=>{
         let userInsession = lookInSession("user");
-        console.log(userInsession, "user");
+//console.log(userInsession, "user");
         
         userInsession ? setUserAuth(JSON.parse(userInsession)) : setUserAuth(null);
       }, []);

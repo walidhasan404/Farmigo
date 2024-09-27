@@ -1,9 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import Oath from '../../../Components/Oath';
+import { AuthContext } from '../../AuthProvider/AuthContext';
 
 const LoginPage: React.FC = () => {
+  const {userAuth: {data} , setUserAuth} = useContext(AuthContext)
   return (
+    data ? <Navigate to='/'/> :
     <div className="min-h-screen flex items-center justify-center ">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
         <h2 className="text-2xl font-semibold text-center text-green-600 mb-6">Welcome to Farmigo</h2>
