@@ -1,53 +1,42 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useState, useEffect } from "react";
+import { lookInSession } from "../../common/session";
 
 interface User {
   accessToken: string;
+  profile_img:string;
   displayName: string;
   email: string;
 }
 
 interface AuthContextType {
-  user: User | null;
-  setUser: (user: any) => void;
-  login: (user: User) => void;
-  logout: () => void;
-  isAuthenticated: boolean;
+  userAuth: User | null;
+  setUserAuth: (user: any) => void;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
+export const AuthContext = createContext<AuthContextType | null>(
+  null
 );
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
 
-  if (context === undefined) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
 
-  return context;
-};
+    export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+      const [userAuth, setUserAuth] = useState<User | null>(null);
+       
+       
+      useEffect(()=>{
+        let userInsession = lookInSession("user");
+        console.log(userInsession, "user");
+        
+        userInsession ? setUserAuth(JSON.parse(userInsession)) : setUserAuth(null);
+      }, []);
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>();
-
-  const login = (userData: User) => {
-    setUser(userData);
-  };
-
-  const logout = () => {
-    setUser(null);
-  };
-
-  const isAuthenticated = !!user;
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+      return (
+        <AuthContext.Provider value={{ userAuth, setUserAuth }}>
+          {children}
+        </AuthContext.Provider>
+      );
+    };
