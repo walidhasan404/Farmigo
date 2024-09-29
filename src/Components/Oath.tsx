@@ -17,7 +17,7 @@ import { AuthContext} from "../Authentication/AuthProvider/AuthContext";
     }
     const { setUserAuth } = authContext;
 
-    const userAuthThroughServer = (serverRoute: string, formData: {}) => {
+  const userAuthThroughServer = (serverRoute: string, formData: {}) => {
       axios.post((import.meta as any).env.VITE_API + serverRoute, formData)
         .then(({ data }) => {
           toast.success('Sign in Successfully');

@@ -1,21 +1,22 @@
-import { useContext } from "react";
+
 import { Link } from "react-router-dom";
 import { removeFromSession } from "../../common/session";
-import { AuthContext } from "../../Authentication/AuthProvider/AuthContext";
+import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
 
 
 const UserNavigationPanel = () => {
-    const {userAuth: {data} , setUserAuth} = useContext(AuthContext)
-    console.log(data);
+    const {userAuth, setUserAuth} = useAuth()
     
+    const name = userAuth?.name;
     const signOutUser = () =>{
         removeFromSession("user")
-        setUserAuth({token : null})
+        setUserAuth(null)
+
     }
   return (
       <div className="bg-white absolute right-0 border border-grey w-60 overflow-hidden duration-200">
         <div className="flex flex-col">
-        <Link to={`/user/${data.name}`} className="link pl-8 py-4">
+        <Link to={`/user/${name}`} className="link pl-8 py-4">
           {/* Add more content here */}
           Profile
         </Link>
@@ -31,7 +32,7 @@ const UserNavigationPanel = () => {
                 onClick={signOutUser}
             >
                 <h1 className="font-bold text-xl mg-1">Sign Out</h1>
-                <p className="text-dark-grey">@{data.name}</p>
+                <p className="text-dark-grey">@{name}</p>
             </button>
       </div>
   );
