@@ -2,12 +2,26 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Oath from '../../../Components/Oath';
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
+
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center ">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
-        <h2 className="text-2xl font-semibold text-center text-green-600 mb-6">Welcome to Farmigo</h2>
-        
+        <h2 className="text-2xl font-semibold text-center text-green-600 mb-6">Create Your Farmigo Account</h2>
+
+        {/* Name Input */}
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+            placeholder="Enter your full name"
+          />
+        </div>
+
         {/* Email Input */}
         <div className="mb-4">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
@@ -26,23 +40,23 @@ const LoginPage: React.FC = () => {
             type="password"
             id="password"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-            placeholder="Enter your password"
+            placeholder="Create a password"
           />
         </div>
 
-        {/* Login Button */}
+        {/* Register Button */}
         <button className="w-full bg-green-600 text-white py-2 rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 mb-4">
-          Login
+          Sign Up
         </button>
 
-        {/* Google Login Button */}
+        {/* Google Signup Button */}
        <Oath/>
 
-        {/* Register Link */}
+        {/* Already have an account */}
         <p className="mt-4 text-sm text-center text-gray-600">
-          Don't have an account?{" "}
-          <Link to="/register" className="text-green-600 hover:underline">
-            Sign up here
+          Already have an account?{" "}
+          <Link to="/login" className="text-green-600 hover:underline">
+            Log in here
           </Link>
         </p>
       </div>
@@ -50,4 +64,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
