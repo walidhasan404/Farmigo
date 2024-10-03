@@ -24,7 +24,7 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await axios.get("https://farmio-app.vercel.app/api/v1/products");
+                const response = await axios.get(import.meta.env.VITE_API+"/products");
                 const productData = response.data.data.find((item: Product) => item._id === id);
 
                 if (productData) {

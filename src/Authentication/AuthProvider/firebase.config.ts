@@ -8,13 +8,13 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCSo8w9QMehHmA5uo15kAi4VY50fG_GbIo",
-  authDomain: "farmigo-auth.firebaseapp.com",
-  projectId: "farmigo-auth",
-  storageBucket: "farmigo-auth.appspot.com",
-  messagingSenderId: "84166252477",
-  appId: "1:84166252477:web:3d8c32aa496918566f24d4"
-};
+   apiKey: import.meta.env.VITE_apiKey,
+   authDomain: import.meta.env.VITE_authDomain,
+   projectId:  import.meta.env.VITE_projectId,
+   storageBucket: import.meta.env.VITE_storageBucket,
+   messagingSenderId: import.meta.env.VITE_messagingSenderId,
+   appId: import.meta.env.VITE_appId
+ };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
