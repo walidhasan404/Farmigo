@@ -32,7 +32,7 @@ const ProductsPage: React.FC = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch('https://farmio-app.vercel.app/api/v1/products');
+                const res = await fetch(import.meta.env.VITE_API+'/products');
                 const data = await res.json();
                 if (data.success) {
                     setProducts(data.data);
