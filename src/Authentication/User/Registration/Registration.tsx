@@ -1,67 +1,110 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import toast from 'react-hot-toast';
+import { userAuthThroughServer } from '../../../common/Hooks/fetchUser';
+import { storeInSession } from '../../../common/session';
+import { useAuth } from '../../AuthProvider/AuthContext';
 import Oath from '../../../Components/Oath';
+import { Link, Navigate } from 'react-router-dom';
 
-const RegisterPage: React.FC = () => {
 
 
+const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+const serverRoute = '/register'
+const schema = z.object({
+  name: z.string().min(1, { message: "Full name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters" }).refine((password) => passwordRegex.test(password), {
+    message: "Password must contain at least one uppercase letter, one number, and one special character."
+  })
+})
+
+type FormData = z.infer<typeof schema>
+
+export default function RegisterPage() {
+  const {userAuth , setUserAuth } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema)
+  })
+
+  const onSubmit = (data: FormData) => {
+    setIsSubmitting(true);
+    
+    userAuthThroughServer(serverRoute, data)
+      .then((userData) => {
+        // Now userData will have the correct result from the server
+        toast.success('Sign in Successfully');
+        storeInSession("user", JSON.stringify(userData));
+        setUserAuth(userData);
+      })
+      .catch((error) => {
+        toast.error(error.message || "An error occurred");
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  };
+  
+  const token = userAuth?.token
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
-        <h2 className="text-2xl font-semibold text-center text-green-600 mb-6">Create Your Farmigo Account</h2>
-
-        {/* Name Input */}
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
-          <input
-            type="text"
-            id="name"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-            placeholder="Enter your full name"
-          />
-        </div>
-
-        {/* Email Input */}
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            id="email"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-            placeholder="Enter your email"
-          />
-        </div>
-
-        {/* Password Input */}
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            id="password"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-            placeholder="Create a password"
-          />
-        </div>
-
-        {/* Register Button */}
-        <button className="w-full bg-green-600 text-white py-2 rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 mb-4">
-          Sign Up
-        </button>
-
-        {/* Google Signup Button */}
+    token ? <Navigate to='/'/> :
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-center text-green-600">Create Your Farmigo Account</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
+            <input
+              {...register('name')}
+              type="text"
+              id="name"
+              className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="Enter your full name"
+            />
+            {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              {...register('email')}
+              type="email"
+              id="email"
+              className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="Enter your email"
+            />
+            {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              {...register('password')}
+              type="password"
+              id="password"
+              className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="Create a password"
+            />
+            {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
+          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-2 text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50"
+          >
+            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
+          </button>
+        </form>
        <Oath/>
-
-        {/* Already have an account */}
-        <p className="mt-4 text-sm text-center text-gray-600">
-          Already have an account?{" "}
-          <Link to="/login" className="text-green-600 hover:underline">
-            Log in here
-          </Link>
+        <p className="text-sm text-center text-gray-600">
+          Already have an account?{' '}
+          <Link to="/login" className="text-green-600 hover:underline">Log in here</Link>
         </p>
       </div>
     </div>
-  );
-};
 
-export default RegisterPage;
+  )
+}

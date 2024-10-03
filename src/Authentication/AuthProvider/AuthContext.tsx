@@ -1,53 +1,62 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
+import { lookInSession } from "../../common/session";
 
 interface User {
-  accessToken: string;
-  displayName: string;
+  token: string;
+  profile_img: string;
+  name: string;
   email: string;
 }
 
 interface AuthContextType {
-  user: User | null;
-  setUser: (user: any) => void;
-  login: (user: User) => void;
-  logout: () => void;
-  isAuthenticated: boolean;
+  userAuth: User | null;
+  setUserAuth: (user: User | null) => void;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+// Create the AuthContext without a default value
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-
-  if (context === undefined) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
-
-  return context;
-};
-
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>();
+  const [userAuth, setUserAuth] = useState<User | null>(null);
 
-  const login = (userData: User) => {
-    setUser(userData);
-  };
+/*   useEffect(() => {
+    let userInSession = lookInSession("user");
+    userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth(null);
+  }, []); when i use this code show Error : Uncaught SyntaxError: "undefined" is not valid JSON*/
 
-  const logout = () => {
-    setUser(null);
-  };
-
-  const isAuthenticated = !!user;
+  useEffect(() => {
+    let userInSession = lookInSession("user");
+  
+    // Check if userInSession is valid before parsing
+    if (userInSession) {
+      try {
+        const parsedUser = JSON.parse(userInSession);
+        setUserAuth(parsedUser);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    } else {
+      setUserAuth(null); // If no user in session, set to null
+    }
+  }, []);
+  
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ userAuth, setUserAuth }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Custom hook to use AuthContext safely
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

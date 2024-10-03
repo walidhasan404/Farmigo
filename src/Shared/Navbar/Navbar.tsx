@@ -1,11 +1,32 @@
-import { useContext } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../Authentication/AuthProvider/AuthContext";
 import Avatar from "../../Components/Avatar/Avatar";
+import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
+import UserNavigationPanel from "./UserNavigationPanel";
 
 const Navbar = () => {
-  const { user } = useContext(AuthContext);
 
+const { userAuth } = useAuth();
+/* The lines `const token = userAuth?.token;` and `const profile_img = userAuth?.profile_img;` are
+using optional chaining (`?.`) to access the `token` and `profile_img` properties from the
+`userAuth` object. For Saving from Type Error : Property 'name' does not exist on type 'User | null'.ts(2339) */
+const token = userAuth?.token;
+const profile_img = userAuth?.profile_img;
+
+const [userNavPanel, setUserNavPanel] = useState(false)
+ //console.log(userAuth.data.profile_img);
+
+ const handleUserNavPanel = () =>{
+  setUserNavPanel(prev => !prev)
+}
+
+const handleBlur = () =>{
+  //why i setTimout use 
+  setTimeout(()=>{
+      setUserNavPanel(false)
+  }, 200)
+  
+}
   return (
     <nav className="">
       <div className="px-4 mx-auto sm:px-6 lg:px-8">
@@ -93,8 +114,20 @@ const Navbar = () => {
           </div>
 
           <div>
-            {user ? (
-              <Avatar src="avatar.png" alt="User Avatar" />
+            {token ? (
+               <div className="relative" onClick={handleUserNavPanel} onBlur={handleBlur}>
+               <button className="w-12 h-12 mt-1">
+               <Avatar src={profile_img || ''} alt="User Avatar" />
+               </button>
+
+                 {/* useernavigation */}
+                 {
+                     userNavPanel ?  <UserNavigationPanel/> : ""
+                 }
+               
+
+             </div>
+             
             ) : (
               <Link
                 to="/login"
