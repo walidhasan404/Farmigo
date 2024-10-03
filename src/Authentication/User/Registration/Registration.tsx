@@ -11,9 +11,9 @@ import Oath from '../../../Components/Oath';
 import { Link, Navigate } from 'react-router-dom';
 
 
-
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 const serverRoute = '/register'
+
 const schema = z.object({
   name: z.string().min(1, { message: "Full name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
@@ -49,6 +49,8 @@ export default function RegisterPage() {
       });
   };
   
+  /* `const token = userAuth?.token` is using optional chaining (`?.`) to access the `token` property
+  of the `userAuth` object. */
   const token = userAuth?.token
 
   return (

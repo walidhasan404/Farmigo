@@ -30,9 +30,6 @@ const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 const handleLoginSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
   // Your login logic 
-  console.log('====================================');
-  console.log(input);
-  console.log('====================================');
   try {
     const userData = await userAuthThroughServer(serverRoute, input)
     toast.success('Login successful')
