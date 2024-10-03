@@ -4,6 +4,7 @@ import Home from "../Pages/Home/Home/Home";
 import ProductsPage from "../Pages/Products/ProductsPage";
 import ProductDetails from "../Components/ProductDetails/ProductDetails";
 import BlogCard from "../Pages/Blogs/Blogs";
+import Dashboards from "../Layouts/Dashboard/Dashboard";
 
 export const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
             {
                 path: "/products",
                 element: <ProductsPage />
+            },
+            {
+                path: "/dashboard",
+                element: <Dashboards />
             },
             {
                 path: "/blogs",
