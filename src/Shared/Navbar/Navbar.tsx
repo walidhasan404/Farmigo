@@ -1,109 +1,116 @@
-
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../Authentication/AuthProvider/AuthContext";
+import Avatar from "../../Components/Avatar/Avatar";
 
 const Navbar = () => {
-    return (
-        <nav className="bg-[#FCF8F1] bg-opacity-30">
-            <div className="px-4 mx-auto sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16 lg:h-20">
-                    <div className="flex-shrink-0">
-                        <a href="#" title="" className="flex items-center space-x-4">
-                            <img
-                                className="w-auto h-8"
-                                src="https://www.farmioagri.com/cdn/shop/files/vinayakk.png?v=1717508736&width=500"
-                                alt=""
-                            />
-                            <h1 className="text-2xl font-bold">FarmiGo</h1>
-                        </a>
-                    </div>
+  const { user } = useContext(AuthContext);
 
-                    <button
-                        type="button"
-                        className="inline-flex p-2 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100"
-                    >
-                        {/* <!-- Menu open: "hidden", Menu closed: "block" --> */}
-                        <svg
-                            className="block w-6 h-6"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M4 8h16M4 16h16"
-                            ></path>
-                        </svg>
+  return (
+    <nav className="">
+      <div className="px-4 mx-auto sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-20">
+          <div className="flex-shrink-0">
+            <a href="#" title="" className="flex items-center space-x-4">
+              <img
+                className="w-auto h-8"
+                src="https://www.farmioagri.com/cdn/shop/files/vinayakk.png?v=1717508736&width=500"
+                alt=""
+              />
+              <h1 className="text-2xl font-bold">FarmiGo</h1>
+            </a>
+          </div>
 
-                        {/* <!-- Menu open: "block", Menu closed: "hidden" --> */}
-                        <svg
-                            className="hidden w-6 h-6"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M6 18L18 6M6 6l12 12"
-                            ></path>
-                        </svg>
-                    </button>
+          <button
+            type="button"
+            className="inline-flex p-2 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100"
+          >
+            {/*  Menu open: "hidden", Menu closed: "block"  */}
+            <svg
+              className="block w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 8h16M4 16h16"
+              ></path>
+            </svg>
 
-                    <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10">
-                        <a
-                            href="#"
-                            title=""
-                            className="text-base text-black transition-all duration-200 hover:text-opacity-80"
-                        >
-                            {" "}
-                            Home{" "}
-                        </a>
+            {/* Menu open: "block", Menu closed: "hidden" */}
+            <svg
+              className="hidden w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
 
-                        <a
-                            href="#"
-                            title=""
-                            className="text-base text-black transition-all duration-200 hover:text-opacity-80"
-                        >
-                            {" "}
-                            Products{" "}
-                        </a>
+          <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10">
+            <Link
+              to={"/"}
+              className="text-base text-black transition-all duration-200 hover:text-opacity-80"
+            >
+              {" "}
+              Home{" "}
+            </Link>
 
-                        <a
-                            href="#"
-                            title=""
-                            className="text-base text-black transition-all duration-200 hover:text-opacity-80"
-                        >
-                            {" "}
-                            Blogs{" "}
-                        </a>
+            <Link
+              to={"/Products"}
+              className="text-base text-black transition-all duration-200 hover:text-opacity-80"
+            >
+              {" "}
+              Products{" "}
+            </Link>
 
-                        <a
-                            href="#"
-                            title=""
-                            className="text-base text-black transition-all duration-200 hover:text-opacity-80"
-                        >
-                            {" "}
-                            Weather{" "}
-                        </a>
-                    </div>
+            <Link
+              to={"/"}
+              className="text-base text-black transition-all duration-200 hover:text-opacity-80"
+            >
+              {" "}
+              Blogs{" "}
+            </Link>
 
-                    <a
-                        href="#"
-                        title=""
-                        className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:bg-yellow-300 hover:text-black focus:text-black focus:bg-yellow-300 font-semibold text-white bg-black rounded-full"
-                        role="button"
-                    >
-                        {" "}
-                        Join Now{" "}
-                    </a>
-                </div>
-            </div>
-        </nav>
-    );
+            <Link
+              to={"/weather"}
+              className="text-base text-black transition-all duration-200 hover:text-opacity-80"
+            >
+              {" "}
+              Weather{" "}
+            </Link>
+          </div>
+
+          <div>
+            {user ? (
+              <Avatar src="avatar.png" alt="User Avatar" />
+            ) : (
+              <Link
+                to="/login"
+                title=""
+                className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:bg-yellow-300 hover:text-black focus:text-black focus:bg-yellow-300 font-semibold text-white bg-black rounded-full"
+                role="button"
+              >
+                {" "}
+                Login{" "}
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
 };
 
 export default Navbar;
