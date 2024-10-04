@@ -33,9 +33,10 @@ const handleLoginSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
   try {
     const userData = await userAuthThroughServer(serverRoute, input)
     toast.success('Login successful')
+    console.log(userData)
     setUserAuth(userData)
   } catch (error: any) {
-        toast.error(error)
+      toast.error(error)
   }
 };
   return (

@@ -37,7 +37,7 @@ export default function RegisterPage() {
     userAuthThroughServer(serverRoute, data)
       .then((userData) => {
         // Now userData will have the correct result from the server
-        toast.success('Sign in Successfully');
+        toast.success('Registered in Successfully');
         storeInSession("user", JSON.stringify(userData));
         setUserAuth(userData);
       })

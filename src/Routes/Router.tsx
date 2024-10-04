@@ -6,6 +6,10 @@ import Home from "../Pages/Home/Home/Home";
 import ProductsPage from "../Pages/Products/ProductsPage";
 import ProductDetails from "../Components/ProductDetails/ProductDetails";
 import BlogCard from "../Pages/Blogs/Blogs";
+import CartPage from "../Pages/Cart/CartPage";
+import CheckoutForm from "../Pages/checkout/CheckoutForm";
+import Dashboards from "../Layouts/Dashboard/Dashboard";
+import Weather from "../Pages/Weather/Weather";
 
 export const router = createBrowserRouter([
     {
@@ -22,17 +26,21 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/dashboard",
-                element: <Dashboards />
+                element: <Dashboards/>
             },
             {
-
                 path: "/blogs",
                 element: <BlogCard />
-
-//                 path: "/products/vegetable",
-//                 element: <Vegetable />
             },
             {
+                path: "/cart",
+                element: <CartPage />
+            },
+            {
+                path: "/checkout",
+                element: <CheckoutForm />
+            },
+            /* {
                 path: "/products/grain & cereal",
                 element: <Grain />
             },
@@ -48,7 +56,7 @@ export const router = createBrowserRouter([
                 path: "/products/fruit",
                 element: <Fruit />
 
-            },
+            }, */
             {
                 path: "/products/:id",
                 element: <ProductDetails />

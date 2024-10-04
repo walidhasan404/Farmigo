@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import ProductItem from "./ProductItem";
+import { Product } from '../../Types/types';
+import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
 
-interface Product {
-    _id: string;
-    product_name: string;
-    category: string;
-    price: number;
-    rating: string;
-    images: string[];
-    weight: number; // Added weight property
-}
 
 const ProductsPage: React.FC = () => {
+    const {setCartItems} = useAuth()
     const [products, setProducts] = useState<Product[]>([]);
     const [search, setSearch] = useState<string>("");
     const [category, setCategory] = useState<string>("All");
@@ -19,8 +13,8 @@ const ProductsPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false); // For dropdown visibility
-    const [quantities, setQuantities] = useState<{ [key: string]: number }>({}); // Track quantities for each product
-
+ // Track quantities for each product
+    //const navigate = useNavigate();
     const categories = ["All", "Dairy", "Vegetables", "Grains & Cereal", "Fruits", "Honey & Jam"];
     const sortOptions = [
         { value: "price-asc", label: "Price: Low to High" },
@@ -49,20 +43,33 @@ const ProductsPage: React.FC = () => {
         fetchProducts();
     }, []);
 
-    const handleAddToCart = (product: Product) => {
-        // Handle adding to cart logic
-        const quantity = quantities[product._id] || 1; // Default to 1 if not set
-        console.log(`Adding ${quantity} of ${product.product_name} to cart.`);
-        // Add logic to update cart state here
-    };
+    useEffect(() => {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+        setCartItems(cart.length)
+      }, [])
+    
+      const handleAddToCart = (product: Product, quantity: number = 1) => {
+      //  console.log('Adding to cart:', product, quantity)
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+        
+        const itemIndex = cart.findIndex((item: Product) => item._id === product._id)
+       
+       
+        if (itemIndex >= 0) {
+          // Product is already in the cart, update quantity
+          cart[itemIndex].quantity = (cart[itemIndex].quantity || 0) + quantity
+        } else {
+          // Product not in the cart, add it with the selected quantity
+          cart.push({ ...product, quantity })
+        }
+    
+        localStorage.setItem('cart', JSON.stringify(cart))
+        setCartItems(cart.length)
+    
+        //console.log('Updated cart:', cart)
+      }
 
-    const handleQuantityChange = (productId: string, value: number) => {
-        setQuantities((prev) => ({
-            ...prev,
-            [productId]: value,
-        }));
-    };
-
+   
     const filteredProducts = products
         .filter((product) =>
             product.product_name.toLowerCase().includes(search.toLowerCase())
@@ -80,9 +87,9 @@ const ProductsPage: React.FC = () => {
                 case "price-desc":
                     return b.price - a.price;
                 case "rating-asc":
-                    return parseFloat(a.rating) - parseFloat(b.rating);
+                    return (a.rating) - (b.rating);
                 case "rating-desc":
-                    return parseFloat(b.rating) - parseFloat(a.rating);
+                    return (b.rating) - (a.rating);
                 default:
                     return 0;
             }
@@ -142,7 +149,8 @@ const ProductsPage: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
-                    <div key={product._id} className="bg-white rounded-lg overflow-hidden border transform transition duration-500 ease-in-out">
+                    <ProductItem key={product._id} product={product} handleAddToCart={handleAddToCart} />
+                   /*  <div key={product._id} className="bg-white rounded-lg overflow-hidden border transform transition duration-500 ease-in-out">
                         <Link to={`/products/${product._id}`} className="relative block">
                             {product.rating && (
                                 <span className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 text-xs font-bold rounded">
@@ -161,13 +169,13 @@ const ProductsPage: React.FC = () => {
                             <p className="text-green-600 font-semibold">${product.price.toFixed(2)}</p>
                             <p className="text-gray-400">Weight: {product.weight} kg</p>
                             <div className="flex items-center mt-2">
-                                {/* <input
+                               <input
                                     type="number"
                                     min="1"
                                     value={quantities[product._id] || 1}
                                     onChange={(e) => handleQuantityChange(product._id, Number(e.target.value))}
                                     className="w-16 p-2 border rounded mr-2"
-                                /> */}
+                                /> 
                                 <button
                                     onClick={() => handleAddToCart(product)}
                                     className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
@@ -176,7 +184,7 @@ const ProductsPage: React.FC = () => {
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> */
                 ))}
             </div>
         </div>

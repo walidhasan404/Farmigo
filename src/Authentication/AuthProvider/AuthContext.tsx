@@ -11,6 +11,8 @@ interface User {
 interface AuthContextType {
   userAuth: User | null;
   setUserAuth: (user: User | null) => void;
+  cartItems: number;
+  setCartItems: (cartItems: number) => void;
 }
 
 // Create the AuthContext without a default value
@@ -22,7 +24,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userAuth, setUserAuth] = useState<User | null>(null);
-
+  const [cartItems, setCartItems] = useState<number>(0)
 /*   useEffect(() => {
     let userInSession = lookInSession("user");
     userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth(null);
@@ -46,7 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   
 
   return (
-    <AuthContext.Provider value={{ userAuth, setUserAuth }}>
+    <AuthContext.Provider value={{ userAuth, setUserAuth , cartItems, setCartItems }}>
       {children}
     </AuthContext.Provider>
   );

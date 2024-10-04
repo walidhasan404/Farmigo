@@ -71,7 +71,7 @@ const BlogCard: React.FC = () => {
 
 export default BlogCard;
 
-
+/* 
 <!-- const Blogs = () => {
     return (
         <section className="py-10 bg-gray-50 sm:py-16 lg:py-24">
@@ -115,4 +115,4 @@ export default BlogCard;
     );
 };
 
-export default Blogs; -->
+export default Blogs; --> */

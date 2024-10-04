@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Avatar from "../../Components/Avatar/Avatar";
 import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
 import UserNavigationPanel from "./UserNavigationPanel";
+import CartButton from "../Button/CartButton";
 
 const Navbar = () => {
 
@@ -97,7 +98,7 @@ const handleBlur = () =>{
             </Link>
 
             <Link
-              to={"/"}
+              to={"/blogs"}
               className="text-base text-black transition-all duration-200 hover:text-opacity-80"
             >
               {" "}
@@ -112,7 +113,8 @@ const handleBlur = () =>{
               Weather{" "}
             </Link>
           </div>
-
+          // i working here
+          <CartButton/>
           <div>
             {token ? (
                <div className="relative" onClick={handleUserNavPanel} onBlur={handleBlur}>

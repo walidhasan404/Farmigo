@@ -10,7 +10,9 @@ const Main = () => {
     return (
       <div>
         {removeNavFooter || <Navbar/>}
+        <div className="max-w-7xl mx-auto"> 
         <Outlet></Outlet>
+        </div>
         {removeNavFooter || <Footer/>}
       </div>
     );
