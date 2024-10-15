@@ -38,10 +38,10 @@ export default function CheckoutForm() {
   const total = subtotal // Assuming no additional fees for this example
 
   return (
-    <div className="flex justify-center bg-gray-100 p-6">
-      <div className="w-full max-w-5xl bg-white shadow-md rounded-lg overflow-hidden">
-        <div className="flex">
-          <div className="w-2/3 p-8">
+    <div className="flex justify-center p-6">
+      <div className="w-full max-w-7xl bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="flex flex-col lg:flex-row md:flex-row">
+          <div className="lg:w-[60%] md:w-[60%] w-full lg:p-8 md:p-6 p-8">
             <h2 className="text-2xl font-semibold mb-6">Checkout</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
@@ -203,7 +203,7 @@ export default function CheckoutForm() {
               </button>
             </form>
           </div>
-          <div className="w-1/3 bg-gray-50 p-2">
+          <div className="w-full lg:w-[40%] md:[40%] p-2">
             <h3 className="text-lg font-semibold mb-4">Order summary</h3>
             <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden">
             <div className="p-4">

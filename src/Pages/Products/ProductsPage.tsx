@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 import { Product } from '../../Types/types';
 import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
+import Loading from "../../Shared/Loading/Loading";
+import useMeta from "../../common/Hooks/useMeta";
 
 
 const ProductsPage: React.FC = () => {
@@ -22,6 +24,11 @@ const ProductsPage: React.FC = () => {
         { value: "rating-asc", label: "Rating: Low to High" },
         { value: "rating-desc", label: "Rating: High to Low" },
     ];
+
+    useMeta({
+        title: 'Products',
+        description: 'Buy You Products',
+      });
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -95,7 +102,7 @@ const ProductsPage: React.FC = () => {
             }
         });
 
-    if (loading) return <p className="text-center text-lg">Loading...</p>;
+    if (loading) return <Loading smallHeight={true}/>;
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
     return (

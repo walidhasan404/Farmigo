@@ -33,6 +33,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     let userInSession = lookInSession("user");
   
+    console.log(userInSession);
+    
     // Check if userInSession is valid before parsing
     if (userInSession) {
       try {

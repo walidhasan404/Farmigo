@@ -7,10 +7,10 @@ import ProductsPage from "../Pages/Products/ProductsPage";
 import ProductDetails from "../Components/ProductDetails/ProductDetails";
 import BlogCard from "../Pages/Blogs/Blogs";
 import CartPage from "../Pages/Cart/CartPage";
-import CheckoutForm from "../Pages/checkout/CheckoutForm";
-import Dashboards from "../Layouts/Dashboard/Dashboard";
 import Weather from "../Pages/Weather/Weather";
-
+import Dashboard from "../Dashboard/index";
+import ProfileUpdate from "../Dashboard/common/Profile/Profile";
+import CheckoutForm from "../Pages/checkout/CheckoutForm";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -24,10 +24,7 @@ export const router = createBrowserRouter([
                 path: "/products",
                 element: <ProductsPage />
             },
-            {
-                path: "/dashboard",
-                element: <Dashboards/>
-            },
+           
             {
                 path: "/blogs",
                 element: <BlogCard />
@@ -75,4 +72,15 @@ export const router = createBrowserRouter([
       path: "/register",
       element: <RegisterPage/>,
     },
+    {
+      path: `/dashboard`,
+      element: <Dashboard/>,
+      children: [
+        { path: "dashboard", element: <Dashboard /> },
+        { path: "profile", element: <ProfileUpdate /> },
+        { path: "orders", element: <div>Orders</div> },
+        { path: "settings", element: <div>Settings</div> }, 
+
+      ]
+    }
   ]);
