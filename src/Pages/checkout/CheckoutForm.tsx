@@ -199,9 +199,15 @@ const CheckoutForm = () => {
 
   return (
     <div className="flex justify-center p-6">
+<<<<<<< HEAD
       <div className="w-full max-w-5xl bg-white shadow rounded-lg overflow-hidden">
         <div className="flex flex-col items-center md:items-start md:flex-row">
           <div className="w-full p-8">
+=======
+      <div className="w-full max-w-7xl bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="flex flex-col lg:flex-row md:flex-row">
+          <div className="lg:w-[60%] md:w-[60%] w-full lg:p-8 md:p-6 p-8">
+>>>>>>> 253cee571fb00fce6b11dd70cdea879fec958f93
             <h2 className="text-2xl font-semibold mb-6">Checkout</h2>
             <form>
               {/* Contact Section */}
@@ -327,6 +333,7 @@ const CheckoutForm = () => {
               </div>
             </form>
           </div>
+<<<<<<< HEAD
 
           {/* Order Summary Section */}
           <div className="w-full bg-gray-100 p-8">
@@ -336,6 +343,23 @@ const CheckoutForm = () => {
                 <div>
                   <p className="font-semibold">{item.product_name}</p>
                   <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+=======
+          <div className="w-full lg:w-[40%] md:[40%] p-2">
+            <h3 className="text-lg font-semibold mb-4">Order summary</h3>
+            <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden">
+            <div className="p-4">
+                {orderItems.map((item) => (
+                <div key={item.id} className="flex items-center mb-4 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0 last:mb-0">
+                    <div className="relative mr-3">
+                    <img src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded" />
+                    <span className="absolute -top-2 -right-2 bg-gray-200 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{item.id}</span>
+                    </div>
+                    <div className="flex-grow">
+                    <h3 className="text-sm font-medium">{item.name}</h3>
+                    <p className="text-xs text-gray-500">{item.quantity}</p>
+                    </div>
+                    <div className="text-sm font-medium">${item.price.toFixed(2)}</div>
+>>>>>>> 253cee571fb00fce6b11dd70cdea879fec958f93
                 </div>
                 <div className="font-semibold">
                   ৳{(item.price * item.quantity).toFixed(2)}

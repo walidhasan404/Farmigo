@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import ChatApp from "../Chat/ChatApp";
+import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
+import useGetData from "../../common/Hooks/useGetData";
 
 interface Product {
     _id: string;
@@ -10,17 +13,27 @@ interface Product {
     quantity: number;
     description: string;
     rating: number;
+    farmer_id: string;
     images: string[];
     created_at: string;
 }
 
 const ProductDetails = () => {
+    const navigate  = useNavigate();
+    const { userAuth }  = useAuth()
+    let customerId : string = "";
+if(userAuth?.token){
+    const token = userAuth?.token ?? "";
+   const {userId} = useGetData(token)
+    customerId = userId
+}
+    
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<Product | null>(null);
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-
+    const [isChatOpen, setIsChatOpen] = useState(false);
     useEffect(() => {
         const fetchProduct = async () => {
             try {
@@ -56,6 +69,14 @@ const ProductDetails = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
+    const openChat = () => {
+        if(userAuth?.token){
+            setIsChatOpen(true)
+        }else{
+            navigate('/login')
+        }
+       };
+    const closeChat = () => setIsChatOpen(false);
     return (
         <section className="text-gray-600 body-font overflow-hidden">
             {product && (
@@ -101,6 +122,33 @@ const ProductDetails = () => {
                             src={product.images[0]}
                         />
                     </div>
+                    <div className="mt-2 text-sm text-gray-500">
+                          <div> Owner Name :  {product.farmer_id} </div>
+                        
+                          <button className="bg-green-500 text-white px-4 py-2 rounded"  onClick={openChat}> Chat Now </button>
+                     </div>
+                      {/* Modal */}
+                    {isChatOpen && (
+                        <div
+                        className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out ${
+                            isChatOpen ? "opacity-100" : "opacity-0"
+                        }`}
+                        >
+                        <div
+                            className="bg-white w-11/12 md:w-8/12 lg:w-6/12 xl:w-4/12 p-5 rounded-lg shadow-lg relative transition-transform duration-300 ease-in-out transform scale-100"
+                            style={{ maxHeight: "90vh", overflowY: "auto" }}
+                        >
+                            <button
+                            className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full"
+                            onClick={closeChat}
+                            >
+                            X
+                            </button>
+                            {/* ChatApp component inside modal */}
+                            <ChatApp farmer_id={product.farmer_id} customer_id={customerId ?? ""} userImg={userAuth?.profile_img?? ""}/>
+                        </div>
+                        </div>
+                    )}
                     {relatedProducts.length > 0 && (
                         <div className="related-products mt-12">
                             <h2 className="text-2xl font-medium text-gray-900 mb-4">Related Products</h2>

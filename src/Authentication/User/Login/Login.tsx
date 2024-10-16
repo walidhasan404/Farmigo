@@ -5,6 +5,7 @@ import {useAuth } from '../../AuthProvider/AuthContext';
 import { useState } from 'react';
 import { userAuthThroughServer } from '../../../common/Hooks/fetchUser';
 import toast from 'react-hot-toast';
+import { storeInSession } from '../../../common/session';
 
 const LoginPage: React.FC = () => {
    const {userAuth, setUserAuth} = useAuth()
@@ -35,6 +36,7 @@ const handleLoginSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     toast.success('Login successful')
     console.log(userData)
     setUserAuth(userData)
+    storeInSession("user", JSON.stringify(userData))
   } catch (error: any) {
       toast.error(error)
   }

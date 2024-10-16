@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '../../Types/types';
 import { Eye, Minus, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface ProductItemProps {
   product: Product;
@@ -10,9 +11,9 @@ interface ProductItemProps {
 
 const ProductItem: React.FC<ProductItemProps> = ({ product, handleAddToCart }) => {
   const [quantity, setQuantity] = useState(1); // State to manage quantity
-
+  
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <Link to={`/products/${product._id}`} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="relative">
         {product.stock && (
           <span className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 text-xs font-bold rounded">
@@ -79,8 +80,9 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, handleAddToCart }) =
         >
           ADD TO CART
         </button>
+       
       </div>
-    </div>
+    </Link>
   );
 };
 
