@@ -11,6 +11,8 @@ import Weather from "../Pages/Weather/Weather";
 import Dashboard from "../Dashboard/index";
 import ProfileUpdate from "../Dashboard/common/Profile/Profile";
 import CheckoutForm from "../Pages/checkout/CheckoutForm";
+import Success from "../Pages/checkout/Success";
+import Cancel from "../Pages/checkout/Cancel";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -36,6 +38,14 @@ export const router = createBrowserRouter([
             {
                 path: "/checkout",
                 element: <CheckoutForm />
+            },
+            {
+                path: "/order/success",
+                element: <Success/>
+            },
+            {
+                path: "/order/cancel",
+                element: <Cancel/>
             },
             /* {
                 path: "/products/grain & cereal",

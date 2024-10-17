@@ -2,18 +2,20 @@ import React, { useEffect, useState } from "react";
 import { CreditCardIcon } from "lucide-react";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(
-  "pk_test_51PNslyRu20g9BDQ6EP1sOdhVVaoYB9NdGR4f910yxhq44orLZmg3DYD6zzYSI2PWcVFMyYiKtCQnbflFZa0006TX00CyIdkzAG" as string
-);
-
 import {
   Elements,
   CardElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import toast from "react-hot-toast";
 
+// Load Stripe
+const stripePromise = loadStripe(
+  "pk_test_51PNslyRu20g9BDQ6EP1sOdhVVaoYB9NdGR4f910yxhq44orLZmg3DYD6zzYSI2PWcVFMyYiKtCQnbflFZa0006TX00CyIdkzAG"
+);
+
+// Type definitions for the order items
 interface OrderItem {
   _id: string;
   product_name: string;
@@ -33,27 +35,27 @@ const CheckoutForm = () => {
   const [division, setDivision] = useState<string>("Dhaka");
   const [postalCode, setPostalCode] = useState<string>("");
   const [saveInfo, setSaveInfo] = useState<boolean>(false);
-  const [useShippingAddress, setUseShippingAddress] = useState<boolean>(false);
-  const [shippingMethod, setShippingMethod] = useState<string>("");
+  const [shippingMethod, setShippingMethod] = useState<string>("Standard");
   const [successMessage, setSuccessMessage] = useState<string>("");
-
-  const [clientSecret, setClientSecret] = useState("");
-  const [transactionId, setTransactionId] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const [transactionId, setTransactionId] = useState<string>("");
 
   const stripe = useStripe();
   const elements = useElements();
 
-  // Fetch items from cart
+  // Fetch items from the cart (mocking local storage for demo purposes)
   const orderItems: OrderItem[] = JSON.parse(
     localStorage.getItem("cart") || "[]"
   );
 
+  // Calculate the subtotal
   const subtotal = orderItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  // Shipping Costs
+  // Define shipping costs based on shipping method
   const shippingCosts: { [key: string]: number } = {
     Standard: 100,
     Express: 300,
@@ -64,150 +66,149 @@ const CheckoutForm = () => {
   const shippingCost = shippingCosts[shippingMethod];
   const total = subtotal + shippingCost || 0;
 
+  // Fetch payment intent from the backend and set clientSecret
   useEffect(() => {
-    // Fetch payment intent client secret
-    axios
-      .post("http://localhost:3000/api/order/create-payment-intent", {
-        price: total,
-      })
-      .then((res) => {
-        setClientSecret(res.data.clientSecret);
-      })
-      .catch((err) => {
-        console.error("Error creating payment intent", err);
-      });
+    const createPaymentIntent = async () => {
+      try {
+        const { data } = await axios.post(
+          "http://localhost:3000/api/order/create-payment-intent",
+          { price: total }
+        );
+        setClientSecret(data.clientSecret);
+      } catch (error) {
+        console.error("Error creating payment intent:", error);
+        toast.error("Failed to create payment intent.");
+      }
+    };
+    if (total > 0) createPaymentIntent();
   }, [total]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setSuccessMessage("");
+    setLoading(true);
 
-    const formData = {
-      email,
-      country,
-      firstName,
-      lastName,
-      address,
-      apartment,
-      city,
-      division,
-      postalCode,
-      saveInfo,
-      useShippingAddress,
-      shippingMethod,
-      shippingCost,
-      total,
-      orderItems: orderItems.map((item) => ({
-        id: item._id,
-        quantity: item.quantity,
-      })),
-    };
-
-    console.log("Form data being sent to backend:", formData);
-
+    // Make sure Stripe.js and Elements are loaded
     if (!stripe || !elements) {
-      console.error("Stripe.js has not been properly loaded.");
+      toast.error("Stripe.js not loaded. Please try again later.");
+      setLoading(false);
       return;
     }
 
-    const card = elements.getElement(CardElement);
-
-    if (!card) {
-      console.error("Card Element not found");
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) {
+      toast.error("Card details not found. Please try again.");
+      setLoading(false);
       return;
     }
 
-    // Create a payment method using Stripe
-    const { error: paymentError, paymentMethod } =
-      await stripe.createPaymentMethod({
-        type: "card",
-        card,
-      });
-
-    if (paymentError) {
-      console.error("Payment Method error:", paymentError);
-      return;
-    }
-
-    console.log("Payment method successfully created:", paymentMethod);
-
-    // Confirm the payment using the clientSecret
-    const { paymentIntent, error: confirmError } =
-      await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card,
+    try {
+      // Create payment method and confirm the payment
+      const { error: paymentMethodError, paymentMethod } =
+        await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement,
           billing_details: {
             email,
             name: `${firstName} ${lastName}`,
           },
-        },
-      });
+        });
 
-    if (confirmError) {
-      console.error("Error confirming the payment:", confirmError);
-      return;
-    }
-
-    if (paymentIntent && paymentIntent.status === "succeeded") {
-      setTransactionId(paymentIntent.id);
-      console.log("Payment succeeded:", paymentIntent);
-      setSuccessMessage(`Payment succeeded. Transaction ID: ${paymentIntent.id}`);
-      localStorage.removeItem("cart");
-
-      // Create a payment record to be sent to your backend
-      const payment = {
-        email,
-        price: paymentIntent.amount / 100,
-        transactionId: paymentIntent.id,
-        date: new Date(),
-        status: "pending",
-      };
-
-      // Post the payment data to the backend for storing in your database
-      try {
-        const paymentResponse = await axios.post(
-          "http://localhost:3000/payments/new-collection",
-          payment
-        );
-        if (paymentResponse.data?.paymentResult?.insertedId) {
-          console.log("Payment successfully stored in the backend.");
-        } else {
-          console.error("Failed to store payment in the backend.");
-        }
-      } catch (err) {
-        console.error("Error storing payment in the backend:", err);
+      if (paymentMethodError) {
+        console.error("Error creating payment method:", paymentMethodError);
+        toast.error(paymentMethodError.message || "Payment failed.");
+        setLoading(false);
+        return;
       }
 
-      // Now send the formData (order details) to your backend to create the order
-      try {
-        const orderResponse = await axios.post(
-          "http://localhost:3000/api/order/create-checkout",
-          formData,
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("Order created successfully:", orderResponse.data);
-      } catch (error) {
-        console.error("Error creating order:", error);
+      const { paymentIntent, error: confirmError } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: paymentMethod.id,
+        });
+
+      if (confirmError) {
+        console.error("Error confirming payment:", confirmError);
+        toast.error(confirmError.message || "Payment confirmation failed.");
+        setLoading(false);
+        return;
       }
-    } else {
-      console.error("Payment failed.");
+
+      // Payment success, process the order and payment
+      if (paymentIntent?.status === "succeeded") {
+        setTransactionId(paymentIntent.id);
+        toast.success("Payment succeeded!");
+
+        // Prepare payment record
+        const paymentData = {
+          email,
+          price: paymentIntent.amount / 100,
+          transactionId: paymentIntent.id,
+          date: new Date(),
+          status: "pending",
+          country,
+          firstName,
+          lastName,
+          address,
+          apartment,
+          city,
+          division,
+          postalCode,
+          saveInfo,
+          shippingMethod,
+          shippingCost,
+          total,
+          orderItems: orderItems.map((item) => ({
+            id: item._id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        };
+
+
+        // Post the payment data and order details to the backend
+        await axios.post("http://localhost:3000/api/order/new-collection", {
+          ...paymentData,
+        })
+        .then((res) => {
+          console.log(res);
+
+           axios
+            .post(
+              "http://localhost:3000/api/order/create-checkout",
+              {...paymentData, orderId: res.data.orderId},
+              { withCredentials: true }
+            )
+            .then((res) => {
+              
+              if(res.data.success_url) {
+                window.location.href = res.data.success_url;
+              }
+            })
+            .catch(() => {
+              toast.error("An error occurred while processing your payment.");
+            });
+          
+        })
+
+
+        // setSuccessMessage(
+        //   `Payment succeeded. Transaction ID: ${paymentIntent.id}`
+        // );
+        localStorage.removeItem("cart");
+      }
+    } catch (error) {
+      console.error("Payment or order creation error:", error);
+      toast.error("An error occurred while processing your payment.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex justify-center p-6">
-<<<<<<< HEAD
       <div className="w-full max-w-5xl bg-white shadow rounded-lg overflow-hidden">
         <div className="flex flex-col items-center md:items-start md:flex-row">
           <div className="w-full p-8">
-=======
-      <div className="w-full max-w-7xl bg-white shadow-md rounded-lg overflow-hidden">
-        <div className="flex flex-col lg:flex-row md:flex-row">
-          <div className="lg:w-[60%] md:w-[60%] w-full lg:p-8 md:p-6 p-8">
->>>>>>> 253cee571fb00fce6b11dd70cdea879fec958f93
             <h2 className="text-2xl font-semibold mb-6">Checkout</h2>
             <form>
               {/* Contact Section */}
@@ -333,7 +334,6 @@ const CheckoutForm = () => {
               </div>
             </form>
           </div>
-<<<<<<< HEAD
 
           {/* Order Summary Section */}
           <div className="w-full bg-gray-100 p-8">
@@ -343,23 +343,6 @@ const CheckoutForm = () => {
                 <div>
                   <p className="font-semibold">{item.product_name}</p>
                   <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-=======
-          <div className="w-full lg:w-[40%] md:[40%] p-2">
-            <h3 className="text-lg font-semibold mb-4">Order summary</h3>
-            <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden">
-            <div className="p-4">
-                {orderItems.map((item) => (
-                <div key={item.id} className="flex items-center mb-4 pb-4 border-b border-gray-200 last:border-b-0 last:pb-0 last:mb-0">
-                    <div className="relative mr-3">
-                    <img src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded" />
-                    <span className="absolute -top-2 -right-2 bg-gray-200 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{item.id}</span>
-                    </div>
-                    <div className="flex-grow">
-                    <h3 className="text-sm font-medium">{item.name}</h3>
-                    <p className="text-xs text-gray-500">{item.quantity}</p>
-                    </div>
-                    <div className="text-sm font-medium">${item.price.toFixed(2)}</div>
->>>>>>> 253cee571fb00fce6b11dd70cdea879fec958f93
                 </div>
                 <div className="font-semibold">
                   ৳{(item.price * item.quantity).toFixed(2)}
@@ -397,6 +380,7 @@ const CheckoutForm = () => {
   );
 };
 
+// Main Component with Stripe's Elements wrapper
 const Checkout = () => (
   <div className=" ">
     <div className=" m-auto border ">
