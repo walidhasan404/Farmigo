@@ -1,25 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Product } from '../../Types/types';
+import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
+import ProductItem from "./ProductItem";
 
-interface Product {
-    _id: string;
-    product_name: string;
-    category: string;
-    price: number;
-    rating: string;
-    images: string[];
-    weight: number; // Added weight property
-}
 
 const ProductsPage: React.FC = () => {
+    const { setCartItems } = useAuth()
     const [products, setProducts] = useState<Product[]>([]);
     const [search, setSearch] = useState<string>("");
     const [category, setCategory] = useState<string>("All");
     const [sortOption, setSortOption] = useState<string>("price-asc");
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [dropdownOpen, setDropdownOpen] = useState<boolean>(false); // For dropdown visibility
-    const [quantities, setQuantities] = useState<{ [key: string]: number }>({}); // Track quantities for each product
+    const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
     const categories = ["All", "Dairy", "Vegetables", "Grains & Cereal", "Fruits", "Honey & Jam"];
     const sortOptions = [
@@ -31,9 +24,11 @@ const ProductsPage: React.FC = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
+            setLoading(true);
             try {
-                const res = await fetch(import.meta.env.VITE_API+'/products');
+                const res = await fetch("https://farmigo-server.onrender.com/api/v1/products");
                 const data = await res.json();
+
                 if (data.success) {
                     setProducts(data.data);
                 } else {
@@ -49,30 +44,41 @@ const ProductsPage: React.FC = () => {
         fetchProducts();
     }, []);
 
-    const handleAddToCart = (product: Product) => {
-        // Handle adding to cart logic
-        const quantity = quantities[product._id] || 1; // Default to 1 if not set
-        console.log(`Adding ${quantity} of ${product.product_name} to cart.`);
-        // Add logic to update cart state here
-    };
+    useEffect(() => {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+        setCartItems(cart.length)
+      }, [])
 
-    const handleQuantityChange = (productId: string, value: number) => {
-        setQuantities((prev) => ({
-            ...prev,
-            [productId]: value,
-        }));
-    };
+    const handleAddToCart = (product: Product, quantity: number = 1) => {
+        
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+
+        const itemIndex = cart.findIndex((item: Product) => item._id === product._id)
+
+
+        if (itemIndex >= 0) {  
+            cart[itemIndex].quantity = (cart[itemIndex].quantity || 0) + quantity
+        } else {
+            cart.push({ ...product, quantity })
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart))
+        setCartItems(cart.length)
+
+        //console.log('Updated cart:', cart)
+    }
+
+    // const handleQuantityChange = (productId: string, action: 'increment' | 'decrement') => {
+    //     setQuantities((prevQuantities) => {
+    //         const currentQty = prevQuantities[productId] || 1;
+    //         const newQty = action === 'increment' ? currentQty + 1 : Math.max(1, currentQty - 1);
+    //         return { ...prevQuantities, [productId]: newQty };
+    //     });
+    // };
 
     const filteredProducts = products
-        .filter((product) =>
-            product.product_name.toLowerCase().includes(search.toLowerCase())
-        )
-        .filter((product) => {
-            if (category === "All") {
-                return true;
-            }
-            return product.category === category;
-        })
+        .filter((product) => product.product_name.toLowerCase().includes(search.toLowerCase()))
+        .filter((product) => (category === "All" ? true : product.category === category))
         .sort((a, b) => {
             switch (sortOption) {
                 case "price-asc":
@@ -80,9 +86,9 @@ const ProductsPage: React.FC = () => {
                 case "price-desc":
                     return b.price - a.price;
                 case "rating-asc":
-                    return parseFloat(a.rating) - parseFloat(b.rating);
+                    return (a.rating) - (b.rating);
                 case "rating-desc":
-                    return parseFloat(b.rating) - parseFloat(a.rating);
+                    return (b.rating) - (a.rating);
                 default:
                     return 0;
             }
@@ -106,10 +112,7 @@ const ProductsPage: React.FC = () => {
                         <button
                             key={cat}
                             onClick={() => setCategory(cat)}
-                            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${category === cat
-                                ? "bg-blue-500 text-white shadow-lg scale-105"
-                                : "bg-blue-100 text-blue-600 hover:bg-blue-200"
-                                }`}
+                            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${category === cat ? "bg-blue-500 text-white shadow-lg scale-105" : "bg-blue-100 text-white hover:bg-blue-500"}`}
                         >
                             {cat}
                         </button>
@@ -140,43 +143,53 @@ const ProductsPage: React.FC = () => {
                     )}
                 </div>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
-                    <div key={product._id} className="bg-white rounded-lg overflow-hidden border transform transition duration-500 ease-in-out">
-                        <Link to={`/products/${product._id}`} className="relative block">
-                            {product.rating && (
-                                <span className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 text-xs font-bold rounded">
-                                    {product.rating} ⭐
-                                </span>
-                            )}
-                            <img
-                                src={product.images[0]}
-                                alt={product.product_name}
-                                className="w-full h-64 object-cover"
-                            />
-                        </Link>
-                        <div className="p-4">
-                            <h2 className="text-lg font-semibold">{product.product_name}</h2>
-                            <p className="text-gray-500">{product.category}</p>
-                            <p className="text-green-600 font-semibold">${product.price.toFixed(2)}</p>
-                            <p className="text-gray-400">Weight: {product.weight} kg</p>
-                            <div className="flex items-center mt-2">
-                                {/* <input
-                                    type="number"
-                                    min="1"
-                                    value={quantities[product._id] || 1}
-                                    onChange={(e) => handleQuantityChange(product._id, Number(e.target.value))}
-                                    className="w-16 p-2 border rounded mr-2"
-                                /> */}
-                                <button
-                                    onClick={() => handleAddToCart(product)}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                                >
-                                    Add to Cart
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    // <div key={product._id} className="bg-white rounded-lg overflow-hidden border transform transition duration-500 ease-in-out hover:shadow-lg">
+                    //     <Link to={`/products/${product._id}`} className="relative block">
+                    //         {product.rating && (
+                    //             <span className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 text-xs font-bold rounded">
+                    //                 {product.rating} ⭐
+                    //             </span>
+                    //         )}
+                    //         <img
+                    //             src={product.images[0]}
+                    //             alt={product.product_name}
+                    //             className="w-full h-64 object-cover"
+                    //         />
+                    //     </Link>
+                    //     <div className="p-4">
+                    //         <h2 className="text-lg font-semibold">{product.product_name}</h2>
+                    //         <p className="text-gray-500">{product.category}</p>
+                    //         <p className="text-green-600 font-semibold">${product.price.toFixed(2)}</p>
+                    //         <p className="text-gray-400">Weight: {product.weight} kg</p>
+                    //         <div className="flex items-center mt-4 space-x-4">
+                    //             <div className="flex items-center space-x-2">
+                    //                 <button
+                    //                     onClick={() => handleQuantityChange(product._id, 'decrement')}
+                    //                     className="px-2 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                    //                 >
+                    //                     -
+                    //                 </button>
+                    //                 <span className="font-semibold">{quantities[product._id] || 1}</span>
+                    //                 <button
+                    //                     onClick={() => handleQuantityChange(product._id, 'increment')}
+                    //                     className="px-2 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                    //                 >
+                    //                     +
+                    //                 </button>
+                    //             </div>
+                    //             <button
+                    //                 onClick={() => handleAddToCart(product)}
+                    //                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                    //             >
+                    //                 Add to Cart
+                    //             </button>
+                    //         </div>
+                    //     </div>
+                    // </div>
+                    <ProductItem key={product._id} product={product} handleAddToCart={handleAddToCart} />
                 ))}
             </div>
         </div>

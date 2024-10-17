@@ -1,85 +1,58 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, Outlet } from 'react-router-dom';
 
-// Define user roles
-type UserRole = 'admin' | 'farmer' | 'consumer';
-
-// Admin Dashboard Component
 const AdminDashboard: React.FC = () => (
-  <div className="p-6 rounded-md shadow">
-    <h1 className="text-2xl font-bold mb-4 text-red-600">Admin Dashboard</h1>
-    <nav>
-      <ul className="space-y-3">
-        <li><a className="text-black hover:underline" href="#">Manage Users</a></li>
-        <li><a className="text-black hover:underline" href="#">Handle Requested Products</a></li>
-        <li><a className="text-black hover:underline" href="#">Handle Added Products by Farmers</a></li>
-        <li><a className="text-black hover:underline" href="#">Update/Delete Products</a></li>
-      </ul>
-    </nav>
+  <div className="p-6 bg-gradient-to-r from-blue-50 to-blue-100 shadow-lg rounded-lg">
+    <h1 className="text-4xl font-bold text-gray-800 mb-4">Admin Dashboard Overview</h1>
+    <p className="text-lg text-gray-700">
+      Welcome to the admin panel. Use the navigation on the left to manage users, products, requests, and blogs.
+    </p>
   </div>
 );
 
-// Farmer Dashboard Component
-const FarmerDashboard: React.FC = () => (
-  <div className="p-6 rounded-md shadow">
-    <h1 className="text-2xl font-bold mb-4 text-green-600">Farmer Dashboard</h1>
-    <nav>
-      <ul className="space-y-3">
-        <li><a className="text-black hover:underline" href="#">Add Products</a></li>
-        <li><a className="text-black hover:underline" href="#">View My Products</a></li>
-        <li><a className="text-black hover:underline" href="#">Edit My Products</a></li>
-      </ul>
-    </nav>
+const Dashboards: React.FC = () => (
+  <div className="min-h-screen flex bg-gray-100">
+    {/* Sidebar */}
+    <aside className="w-1/4 bg-gray-900 text-white p-6 space-y-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Admin Dashboard</h1>
+      <nav>
+        <ul className="space-y-4">
+          <li>
+            <Link to='/dashboard/users' className="flex items-center space-x-2 text-white hover:text-blue-300 transition duration-300">
+              <i className="fas fa-users"></i>
+              <span>Manage Users</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/dashboard/products" className="flex items-center space-x-2 text-white hover:text-blue-300 transition duration-300">
+              <i className="fas fa-box"></i>
+              <span>Manage Products</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="#" className="flex items-center space-x-2 text-white hover:text-blue-300 transition duration-300">
+              <i className="fas fa-tasks"></i>
+              <span>Manage Requested Items</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/dashboard/blogs" className="flex items-center space-x-2 text-white hover:text-blue-300 transition duration-300">
+              <i className="fas fa-blog"></i>
+              <span>Manage Blogs</span>
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    {/* Main Content Area */}
+    <main className="flex-1 p-6 bg-gray-50">
+      <AdminDashboard />
+      <section className="mt-6">
+        <Outlet />
+      </section>
+    </main>
   </div>
 );
-
-// Consumer Dashboard Component
-const ConsumerDashboard: React.FC = () => (
-  <div className="p-6 rounded-md shadow">
-    <h1 className="text-2xl font-bold mb-4 text-blue-600">Consumer Dashboard</h1>
-    <nav>
-      <ul className="space-y-3">
-        <Link to="/"><li><a className="text-black hover:underline" href="#">Home</a></li></Link>
-        <li><a className="text-black hover:underline" href="#">My Cart</a></li>
-        <li><a className="text-black hover:underline" href="#">Purchase History</a></li>
-        <li><a className="text-black hover:underline" href="#">Join as Farmer</a></li>
-      </ul>
-    </nav>
-  </div>
-);
-
-const Dashboards: React.FC = () => {
-  const [role, setRole] = useState<UserRole>('consumer'); // Default role is 'consumer'
-
-  const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setRole(event.target.value as UserRole);
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <div className="w-1/4 p-6 bg-gray-800 text-white">
-        <h1 className="text-3xl font-bold mb-6">Multi-Role Dashboard</h1>
-        <label className="block mb-4">
-          <span className="text-lg">Select Role:</span>
-          <select
-            value={role}
-            onChange={handleRoleChange}
-            className="mt-2 w-full bg-gray-700 border-none rounded-md p-2 text-white focus:outline-none"
-          >
-            <option value="admin">Admin</option>
-            <option value="farmer">Farmer</option>
-            <option value="consumer">Consumer</option>
-          </select>
-        </label>
-      </div>
-
-      <div className="flex-1 p-6">
-        {role === 'admin' && <AdminDashboard />}
-        {role === 'farmer' && <FarmerDashboard />}
-        {role === 'consumer' && <ConsumerDashboard />}
-      </div>
-    </div>
-  );
-};
 
 export default Dashboards;

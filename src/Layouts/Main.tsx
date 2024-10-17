@@ -3,17 +3,19 @@ import Navbar from "../Shared/Navbar/Navbar";
 import Footer from "../Shared/Footer/Footer";
 
 const Main = () => {
-    const location = useLocation();
+  const location = useLocation();
 
-    const removeNavFooter =
-      location.pathname.includes("login") || location.pathname.includes("sign-up")
-    return (
-      <div>
-        {removeNavFooter || <Navbar/>}
+  const removeNavFooter =
+    location.pathname.includes("login") || location.pathname.includes("sign-up")
+  return (
+    <div>
+      {removeNavFooter || <Navbar />}
+      <div className="max-w-7xl mx-auto">
         <Outlet></Outlet>
-        {removeNavFooter || <Footer/>}
       </div>
-    );
-  };
+      {removeNavFooter || <Footer />}
+    </div>
+  );
+};
 
 export default Main;

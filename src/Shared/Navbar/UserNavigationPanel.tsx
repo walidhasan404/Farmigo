@@ -17,11 +17,9 @@ const UserNavigationPanel = () => {
       <div className="bg-white absolute right-0 border border-grey w-60 overflow-hidden duration-200">
         <div className="flex flex-col">
         <Link to={`/user/${name}`} className="link pl-8 py-4">
-          {/* Add more content here */}
           Profile
         </Link>
-        <Link to={`/dashboard/blogs`} className="link pl-8 py-4">
-          {/* Add more content here */}
+        <Link to="/dashboard" className="link pl-8 py-4">
           Dashboard
         </Link>
         </div> 
