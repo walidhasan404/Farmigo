@@ -4,18 +4,16 @@ import Avatar from "../../Components/Avatar/Avatar";
 import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
 import UserNavigationPanel from "./UserNavigationPanel";
 import CartButton from "../Button/CartButton";
-
+import LanguageShift from "../../i18n/hooks/useTranslation";  // Your language translation logic
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
   const { userAuth } = useAuth();
   const token = userAuth?.token;
   const profile_img = 'https://i.ibb.co.com/TWX0wPv/images-4.png';
-
+  const { t } = useTranslation();
   const [userNavPanel, setUserNavPanel] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  console.log(userAuth);
-
 
   const handleUserNavPanel = () => {
     setUserNavPanel((prev) => !prev);
@@ -93,28 +91,33 @@ const Navbar = () => {
               to="/"
               className="text-base text-black hover:text-opacity-80 transition-all duration-200"
             >
-              Home
+              {t('home')}
             </Link>
             <Link
               to="/products"
               className="text-base text-black hover:text-opacity-80 transition-all duration-200"
             >
-              Products
+              {t('products')}
             </Link>
             <Link
               to="/blogs"
               className="text-base text-black hover:text-opacity-80 transition-all duration-200"
             >
-              Blogs
+              {t('blogs')}
             </Link>
             <Link
               to="/weather"
               className="text-base text-black hover:text-opacity-80 transition-all duration-200"
             >
-              Weather
+              {t('weather')}
             </Link>
           </div>
-          <CartButton />
+
+          {/* Cart and Language Shift */}
+          <div className="flex items-center space-x-6">
+            <CartButton />
+            <LanguageShift />  {/* Language switcher */}
+          </div>
 
           {/* Avatar / Login */}
           <div className="hidden lg:flex lg:items-center">
@@ -124,8 +127,8 @@ const Navbar = () => {
                 onClick={handleUserNavPanel}
                 onBlur={handleBlur}
               >
-                <button className="w-12 h-12 mt-1">
-                  <Avatar src={profile_img} alt="User Avatar" />.
+                <button title="title" className="w-12 h-12 mt-1">
+                  <Avatar src={profile_img} alt="User Avatar" />
                 </button>
                 {userNavPanel && <UserNavigationPanel />}
               </div>
@@ -134,7 +137,7 @@ const Navbar = () => {
                 to="/login"
                 className="px-5 py-2.5 text-base font-semibold text-white bg-black rounded-full transition-all duration-200 hover:bg-yellow-300 hover:text-black"
               >
-                Login
+                {t('login')}
               </Link>
             )}
           </div>
@@ -149,25 +152,25 @@ const Navbar = () => {
               to="/"
               className="block text-base font-medium text-black hover:text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2"
             >
-              Home
+              {t('home')}
             </Link>
             <Link
               to="/products"
               className="block text-base font-medium text-black hover:text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2"
             >
-              Products
+              {t('products')}
             </Link>
             <Link
               to="/blogs"
               className="block text-base font-medium text-black hover:text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2"
             >
-              Blogs
+              {t('blogs')}
             </Link>
             <Link
               to="/weather"
               className="block text-base font-medium text-black hover:text-gray-700 hover:bg-gray-100 rounded-md px-3 py-2"
             >
-              Weather
+              {t('weather')}
             </Link>
           </div>
 
@@ -175,8 +178,8 @@ const Navbar = () => {
           <div className="px-5 py-3">
             {token ? (
               <div className="flex justify-center">
-                <button className="w-12 h-12 mt-1" onClick={handleUserNavPanel}>
-                  <Avatar src={profile_img} alt="User Avatar" />.
+                <button title="title" className="w-12 h-12 mt-1" onClick={handleUserNavPanel}>
+                  <Avatar src={profile_img} alt="User Avatar" />
                 </button>
                 {userNavPanel && <UserNavigationPanel />}
               </div>
@@ -185,7 +188,7 @@ const Navbar = () => {
                 to="/login"
                 className="block w-full text-center text-white bg-black px-4 py-2 rounded-full transition-all duration-200 hover:bg-yellow-300 hover:text-black"
               >
-                Login
+                {t('login')}
               </Link>
             )}
           </div>
