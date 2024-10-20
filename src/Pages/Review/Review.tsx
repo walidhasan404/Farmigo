@@ -51,7 +51,7 @@ function ReviewForm({ onClose , review}: { onClose: () => void , review: any} ) 
 
     try {
         // Send the review data to the backend
-        await axios.post('http://localhost:3000/api/v1/review/create', reviewData);
+        await axios.post(import.meta.env.VITE_API + '/review/create', reviewData);
         toast.success('Review submitted successfully!');
     } catch (error: any) {
         // Display an error message if the API call fails
