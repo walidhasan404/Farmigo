@@ -206,7 +206,7 @@ const handleBlur = () =>{
              
               <div className="relative group">
                 <Link to="/blogs" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
-                  BLOG
+                  Blogs
                 </Link>
               </div>
             </div>

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
 
 export function StarRating({ rating, setRating }: { rating: number; setRating?: (rating: number) => void }) {
     return (
@@ -8,7 +10,7 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
         {[...Array(5)].map((_, i) => (
           <svg
             key={i}
-            className={`w-6 h-6 cursor-pointer ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+            className={`w-6 h-6 cursor-pointer ${i < rating ? 'text-green-400' : 'text-gray-300'}`}
             fill="currentColor"
             viewBox="0 0 20 20"
             onClick={() => setRating && setRating(i + 1)}
@@ -25,12 +27,12 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
     const [reviewtxt, setReview] = useState('');
     const [name, setName] = useState('');
     const [orderNo, setOrderNo] = useState('');
-  
+
     const {userId, productId, farmerId} = review;
   
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-  
+     
       // Prepare the review data object
       const reviewData = {
           rating,
@@ -41,7 +43,7 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
           productId,
           orderNo,
       };
-  
+
       try {
           // Send the review data to the backend
           await axios.post(import.meta.env.VITE_API + '/review/create', reviewData);
@@ -112,7 +114,7 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
               <button type="button" onClick={onClose} className="px-4 py-2 border rounded">
                 Cancel review
               </button>
-              <button type="submit" className="px-4 py-2 bg-yellow-400 text-white rounded">
+              <button type="submit" className="px-4 py-2 bg-black text-white rounded">
                 Submit Review
               </button>
             </div>
@@ -123,6 +125,9 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
   }
   
  export function ReviewsContent({ review }: { review: any }) {
+  const navigate  = useNavigate();
+  const { userAuth }  = useAuth()
+  const token = userAuth?.token
     const [showReviewForm, setShowReviewForm] = useState(false);
     const overallRating = 5.00;
     const totalReviews = 2;
@@ -155,7 +160,7 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
                 <span className="w-16 md:w-20">{dist.stars} star</span>
                 <div className="w-full bg-gray-200 rounded-full h-2 md:h-2.5 mx-2">
                   <div
-                    className="bg-yellow-400 h-2 md:h-2.5 rounded-full"
+                    className="bg-green-400 h-2 md:h-2.5 rounded-full"
                     style={{ width: `${(dist.count / totalReviews) * 100}%` }}
                   ></div>
                 </div>
@@ -165,8 +170,13 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
           </div>
         </div>
         <button 
-          className="w-full md:w-auto bg-yellow-400 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setShowReviewForm(true)}
+          className="w-full md:w-auto bg-black text-white font-bold py-2 px-4 rounded"
+          onClick={
+            () => {
+              if(token) {
+                setShowReviewForm(true);
+              }else { navigate('/login')}
+            }}
         >
           Write a review
         </button>
