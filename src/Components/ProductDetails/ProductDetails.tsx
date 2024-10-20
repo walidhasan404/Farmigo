@@ -23,7 +23,6 @@ const ProductDetails = () => {
     const navigate  = useNavigate();
     const { userAuth }  = useAuth()
     let customerId : string = "";
-    const token = userAuth?.token
 if(userAuth?.token){
     const token = userAuth?.token ?? "";
    const {userId} = useGetData(token)
