@@ -149,7 +149,7 @@ const handleBlur = () =>{
 
 export default Navbar; */
 
-import { Search, User, ShoppingCart, ChevronDown, Menu, X } from 'lucide-react'
+import { Search, User, ChevronDown, Menu, X } from 'lucide-react'
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -181,7 +181,7 @@ const handleBlur = () =>{
   }
 
   return (
-    <nav className="bg-white ">
+    <nav className="bg-white">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
          {/*  //Logo  */}
@@ -197,24 +197,14 @@ const handleBlur = () =>{
               <Link to="/products" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">
                 Products
               </Link>
-              <div className="relative group">
-                <Link to="/fruits" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
-                  Fruits
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                </Link>
-              </div>
+            
               <div className="relative group">
                 <Link to="/weather" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
                   Weather
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </Link>
               </div>
-              <div className="relative group">
-                <Link to="/vegetable" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
-                  VEGETABLE
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                </Link>
-              </div>
+             
               <div className="relative group">
                 <Link to="/blogs" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
                   BLOG

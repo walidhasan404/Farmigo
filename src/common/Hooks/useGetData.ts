@@ -23,16 +23,16 @@ const useGetData = (token: string | undefined): UseTokenDataResult => {
     }
 
     try {
-        console.log('====================================');
-        console.log(token);
-        console.log('====================================');
+       
+      //  console.log(token);
+       
 
         const decodedToken = jwtDecode<CustomTokenPayload>(token);
-        console.log('Decoded Token:', decodedToken);
+        //console.log('Decoded Token:', decodedToken);
         
         const userId = decodedToken.user?.id;
         const userRole = decodedToken.user?.role || ''; // Default to an empty string if role is undefined
-         console.log(userRole, 'hook');
+        // console.log(userRole, 'hook');
          
         return { userId, userRole };
     } catch (error) {

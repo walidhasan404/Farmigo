@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom"
 import Sidebar from "./common/Sidebar"
 import Topbar from "./common/Topbar"
-import TotalSale from "./components/TotalSale"
+
 
 
 const Dashboard = () => {
@@ -17,8 +17,6 @@ const Dashboard = () => {
         <Topbar/>
        
         <Outlet/>
-       
-         
       </div>
       
       </div>

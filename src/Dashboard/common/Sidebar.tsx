@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
 import useGetData from "../../common/Hooks/useGetData"
+import { LogOutIcon } from "lucide-react";
 
 
 const Sidebar = () => {
@@ -8,35 +9,43 @@ const Sidebar = () => {
     const token = userAuth?.token
 
     const {userRole} = useGetData(token)
+    console.log('====================================');
+    console.log(userRole);
+    console.log('====================================');
   return (
-    <div className="hidden lg:flex flex-col h-screen bg-white shadow-lg w-64">
+    <div className="hidden lg:flex flex-col h-svh bg-white w-64">
     <div className="flex items-center justify-center py-6">
         <div className="flex items-center">
             <div className="bg-gradient-to-r from-purple-500 to-blue-500 p-2 rounded-full">
                 <i className="fas fa-circle text-white"></i>
             </div>
-            <span className="ml-3 text-xl font-bold text-gray-800">Farmigo</span>
+            <Link to={'/'} className="ml-3 text-xl font-bold text-gray-800">Farmigo</Link>
         </div>
     </div>
-   
+    <div className="flex flex-col justify-between h-full"> 
     <nav className="flex-1 px-4">
+        
         <ul className="space-y-4">
-            <li className="flex items-center text-blue-600">
+            <Link to={'/dashboard'} className="flex items-center text-blue-600">
                 <i className="fas fa-home mr-3"></i>
                 <span>Dashboard</span>
-            </li>
+            </Link>
             {
         userRole === "admin" && (
             <> 
-            <Link to={'/dashboard/user'} className="flex items-center text-gray-400">
+            <Link to={'/dashboard/admin/users'} className="flex items-center text-gray-400">
                 <i className="fas fa-shopping-cart mr-3"></i>
                 <span>Users</span>
             </Link>
-            <Link to={'/dashboard/products'} className="flex items-center text-gray-400">
+            <Link to={'/dashboard/admin/products'} className="flex items-center text-gray-400">
                 <i className="fas fa-shopping-cart mr-3"></i>
                 <span>Products</span>
             </Link>
-            <Link to={'/dashboard/order'} className="flex items-center text-gray-400">
+            <Link to={'/dashboard/admin/blogs'} className="flex items-center text-gray-400">
+                <i className="fas fa-shopping-cart mr-3"></i>
+                <span>Blogs</span>
+            </Link>
+            <Link to={'/dashboard/admin/blogs'} className="flex items-center text-gray-400">
                 <i className="fas fa-shopping-cart mr-3"></i>
                 <span>Orders</span>
             </Link>
@@ -44,20 +53,20 @@ const Sidebar = () => {
         )
     }
             {
-                userRole === "Farmer" ? (
+                userRole === "farmer" ? (
                     <>
-                    <Link to={'/dashboard/profile'} className="flex items-center text-gray-400">
+                    <Link to={'/dashboard/farmer/products'} className="flex items-center text-gray-400">
                         <i className="fas fa-shopping-cart mr-3"></i>
                         <span>Products</span>
                     </Link>
-                    <li className="flex items-center text-gray-400">
-                        <i className="fas fa-table mr-3"></i>
+                    <Link to={'/dashboard/farmer/orders'} className="flex items-center text-gray-400">
+                        <i className="fas fa-shopping-cart mr-3"></i>
                         <span>Orders</span>
-                    </li>
-                    <li className="flex items-center text-gray-400">
-                        <i className="fas fa-th-large mr-3"></i>
-                        <span>Kanban</span>
-                    </li>
+                    </Link>
+                    <Link to={'/dashboard/farmer/customers'} className="flex items-center text-gray-400">
+                        <i className="fas fa-shopping-cart mr-3"></i>
+                        <span>Customers</span>
+                    </Link>
                     </>
                 ):(
                     <>
@@ -78,7 +87,22 @@ const Sidebar = () => {
             </Link>
            
         </ul>
+
+        
+        
     </nav>
+
+       <nav className="p-4"> 
+            <button className="flex items-center text-gray-400">
+                <LogOutIcon/>
+                <span onClick={() =>{
+                    sessionStorage.removeItem('user')
+                    window.location.href='/login'
+                }} >Logout</span>
+            </button>
+        </nav>
+    </div>
+
    
 </div>
   )

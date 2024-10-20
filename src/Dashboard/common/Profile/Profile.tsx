@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Dribbble, Facebook, Linkedin, Twitter, ChevronDown } from "lucide-react"
+import { Dribbble, Facebook, Linkedin, Twitter,} from "lucide-react"
 import { useAuth } from "../../../Authentication/AuthProvider/AuthContext"
 import useGetData from "../../../common/Hooks/useGetData"
 
@@ -9,13 +9,29 @@ export default function ProfileUpdate() {
       // Replace with actual user role from backend
     const {userAuth} = useAuth()
     const profilePic = userAuth?.profile_img || ""
-    const name = userAuth?.name
     const token = userAuth?.token;
     const {userRole} = useGetData(token)
-    console.log('====================================');
-    console.log(userRole);
-    console.log('====================================');
+
+    interface Address {
+      street: string;
+      city: string;
+      house_number: string;
+      postal_code: string;
+    }
+  interface Input{
+    name: string;
+    bio: string;
+    profilePic: string;
+    address: Address;
+  }
+  const initialInput : Input = {
+    name: '',
+    bio: '',
+    profilePic: '',
+    address: {street : '', city: '', house_number: '', postal_code: '' }
+  }
   const [activeTab, setActiveTab] = useState("personal")
+  const [input, setInput] = useState(initialInput)
 
   const TabButton = ({ id, label }: { id: string; label: string }) => (
     <button
@@ -29,7 +45,30 @@ export default function ProfileUpdate() {
       {label}
     </button>
   )
-
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
+   const {name, value} = e.target;
+   if (['street', 'city', 'house_number', 'postal_code'].includes(name)) {
+    // Update the address object specifically
+    setInput(prevInput => ({
+      ...prevInput,
+      address: {
+        ...prevInput.address,
+        [name]: value, // Update the relevant field in address
+      }
+    }));
+  } else {
+    // For other flat fields like name, bio, profilePic
+    setInput(prevInput => ({
+      ...prevInput,
+      [name]: value, // Update the flat field directly
+    }));
+  }
+  }
+    const handleUpdateForm =(e : React.FormEvent<HTMLFormElement>)=>{
+      e.preventDefault();
+      // TODO: Implement update form logic
+      console.log("Update form submitted!" , input);
+    }
   return (
     <div className="flex flex-col lg:flex-row gap-2">
       {/* Sidebar */}
@@ -75,56 +114,75 @@ export default function ProfileUpdate() {
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-2xl font-bold mb-4">Personal Information</h2>
             <p className="text-gray-600 mb-6">Update your personal details here.</p>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form className="space-y-4" onSubmit={handleUpdateForm}>
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                    First Name
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name
                   </label>
                   <input
                     type="text"
-                    id="firstName"
-                    defaultValue={name}
+                    id="name"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter your first name"
+                    name="name" value={input.name} onChange={handleInputChange} 
                   />
                 </div>
+                
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                    Last Name
+                  <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                    City
                   </label>
                   <input
                     type="text"
-                    id="lastName"
+                    id="city"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your last name"
+                    placeholder="Enter your city"
+                    name="city" value={input.address.city} onChange={handleInputChange} 
+                  />
+                </div>
+                <div>
+                  <label htmlFor="postal_code" className="block text-sm font-medium text-gray-700 mb-1">
+                    Postal Code
+                  </label>
+                  <input
+                    type="text"
+                    id="postal_code"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your postal_code code"
+                    name="postal_code" value={input.address.postal_code} onChange={handleInputChange}
                   />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                    Country
+                  <label htmlFor="house_number" className="block text-sm font-medium text-gray-700 mb-1">
+                  House Number
                   </label>
                   <input
                     type="text"
-                    id="country"
+                    id="house_number"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your country"
+                    placeholder="Enter your state"
+                    name="house_number" value={input.address.house_number} onChange={handleInputChange} 
                   />
                 </div>
                 <div>
-                  <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700 mb-1">
-                    Zip Code
+                  <label htmlFor="street" className="block text-sm font-medium text-gray-700 mb-1">
+                    Street
                   </label>
                   <input
                     type="text"
-                    id="zipCode"
+                    id="street"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your zip code"
+                    placeholder="Enter your postal_code code"
+                    name="street" value={input.address.street} onChange={handleInputChange}
                   />
                 </div>
               </div>
+
               <div>
                 <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
                   Bio
@@ -134,18 +192,19 @@ export default function ProfileUpdate() {
                   rows={4}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Tell us about yourself"
+                  name="bio" value={input.bio} onChange={handleInputChange}
                 ></textarea>
               </div>
               <div>
-                <label htmlFor="experience" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="profilePic" className="block text-sm font-medium text-gray-700 mb-1">
                   Profile Pic
                 </label>
                 <input
                     type="text"
-                    id="imageInput"
-                    defaultValue={profilePic}
+                    id="profilePic"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="profile image"
+                    name="profilePic" value={input.profilePic} onChange={handleInputChange}
                   />
                 
               </div>
