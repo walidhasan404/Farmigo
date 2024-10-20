@@ -14,7 +14,7 @@ const UserNavigationPanel = () => {
 
     }
   return (
-      <div className="bg-white absolute right-0 border border-grey w-60 overflow-hidden duration-200">
+      <div className="z-30 bg-white absolute md:right-0 lg:right-0  border border-grey w-60 overflow-hidden duration-200">
         <div className="flex flex-col">
         <Link to={`/user/${name}`} className="link pl-8 py-4">
           {/* Add more content here */}

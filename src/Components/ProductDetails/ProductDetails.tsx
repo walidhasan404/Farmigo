@@ -4,6 +4,7 @@ import axios from "axios";
 import ChatApp from "../Chat/ChatApp";
 import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
 import useGetData from "../../common/Hooks/useGetData";
+import Review from "../../Pages/Review/Review";
 
 interface Product {
     _id: string;
@@ -54,13 +55,18 @@ if(userAuth?.token){
         };
 
         fetchProduct();
+        
     }, [id]);
 
     const fetchRelatedProducts = async (category: string) => {
         try {
-            const res = await axios.get("https://farmio-app.vercel.app/api/v1/products");
-            const filteredProducts = res.data.data.filter((item: Product) => item.category === category && item._id !== id);
+            console.log(category);
+            const res = await axios.get(import.meta.env.VITE_API + "/products");
+            const filteredProducts = res.data.data.filter((item: Product) => item.category.toLowerCase() === category.toLowerCase());
             setRelatedProducts(filteredProducts);
+            console.log('====================================');
+            console.log(filteredProducts);
+            
         } catch (err) {
             setError("Error fetching related products");
         }
@@ -149,11 +155,15 @@ if(userAuth?.token){
                         </div>
                         </div>
                     )}
+                    {/* review PAenl */}
+                     <Review userId={customerId} farmerId={product.farmer_id} productId={product._id}/>
+
+                    {/* Related Products */}
                     {relatedProducts.length > 0 && (
                         <div className="related-products mt-12">
                             <h2 className="text-2xl font-medium text-gray-900 mb-4">Related Products</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                {relatedProducts.map((relatedProduct) => (
+                                {relatedProducts.slice(0,4).map((relatedProduct) => (
                                     <div key={relatedProduct._id} className="product-card border p-4 rounded-lg">
                                         <Link to={`/products/${relatedProduct._id}`}>
                                             <img

@@ -149,7 +149,7 @@ const handleBlur = () =>{
 
 export default Navbar; */
 
-import { Search, User, ChevronDown, Menu, X } from 'lucide-react'
+import { Search, User, Menu, X } from 'lucide-react'
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -201,29 +201,27 @@ const handleBlur = () =>{
               <div className="relative group">
                 <Link to="/weather" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
                   Weather
-                  <ChevronDown className="ml-1 h-4 w-4" />
                 </Link>
               </div>
              
               <div className="relative group">
                 <Link to="/blogs" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium inline-flex items-center">
                   BLOG
-                  <ChevronDown className="ml-1 h-4 w-4" />
                 </Link>
               </div>
             </div>
           </div>
-
+         
            {/* Right side icons  */}
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
               <button className="p-1 rounded-full text-gray-700 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                 <Search className="h-6 w-6" />
               </button>
-             
-              <div className="ml-3 relative">
+              <div className="">
                 <CartButton/>
-              </div>
+               </div>
+               
                    <div>
             {token ? (
                <div className="relative" onClick={handleUserNavPanel} onBlur={handleBlur}>
@@ -249,12 +247,10 @@ const handleBlur = () =>{
          ) : (
            <Link
              to="/login"
-             title=""
-             className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:bg-yellow-300 hover:text-black focus:text-black focus:bg-yellow-300 font-semibold text-white bg-black rounded-full"
+             className="ml-2 hidden lg:inline-flex md:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:bg-yellow-300 hover:text-black focus:text-black focus:bg-yellow-300 font-semibold text-white bg-black rounded-full"
              role="button"
            >
-             {" "}
-             Login{" "}
+             Login
            </Link>
          )}
        </div>
@@ -263,7 +259,10 @@ const handleBlur = () =>{
           </div>
 
           {/* // Mobile menu button  */}
-          <div className="-mr-2 flex md:hidden">
+          <div className="-mr-2 flex md:hidden items-center">
+          <div className="">
+          <CartButton/>
+          </div>
             <button
               onClick={toggleMobileMenu}
               type="button"
@@ -289,24 +288,52 @@ const handleBlur = () =>{
         } overflow-hidden`}
         id="mobile-menu"
       >
+      
+       
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           <NavLink to="/products" className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">
             Products
           </NavLink>
-          <Link to="/seasonal-fruits" className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">
-             FRUITS
-          </Link>
+        
+    
           <Link to="/weather" className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">
             Weather
-          </Link>
-          <Link to="/vegetable" className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">
-            VEGETABLE
           </Link>
           <Link to="/blogs" className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">
             BLOG
           </Link>
+         
         </div>
+        <div> 
+            {token ? (
+               <div className="relative" onClick={handleUserNavPanel} onBlur={handleBlur}>
+
+                {token.length > 0 ? (
+                  <button className="mt-4 rounded-full text-gray-700 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white ml-3">
+                  <Avatar src={profile_img || ''} alt="User Avatar" className="h-6 w-12 " />
+                  </button>
+                   
+                ): (<button className="p-1 rounded-full text-gray-700 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white ml-3">
+                <User className="h-6 w-8" />
+              </button> )}
+              
+
+                 {/* // useernavigation panel */}
+                 {
+                  userNavPanel ?  <UserNavigationPanel/> : ""
+              }
+            
+
+          </div>
+          
+         ) : (
+          <NavLink to="/login" className="ml-2 text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium">
+          Login
+        </NavLink>
+         )}
+       </div>
       </div>
+     
     </nav>
   )
 }
