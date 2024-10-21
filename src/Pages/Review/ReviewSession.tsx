@@ -139,7 +139,7 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
   const token = userAuth?.token
     const [showReviewForm, setShowReviewForm] = useState(false);
     const overallRating = 5.00;
-    const totalReviews = 2;
+    const totalReviews = reviews?.length || 0;
 
     // Fetch reviews from API
   const getReview = async () => {
@@ -147,8 +147,9 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
       console.log('====================================');
       console.log(review.productId);
       console.log('====================================');
-      const response = await axios.get(`${import.meta.env.VITE_API}/review/product/${review.productId}`);
-      setReviews(response.data.data);
+      const response = await axios.get(import.meta.env.VITE_API+ `/review/product/${review.productId}`);
+      setReviews(response.data?.data || []);
+    
     } catch (error: any) {
       toast.error(error.message || "An error occurred while fetching reviews.");
     }
@@ -160,13 +161,13 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
 
   console.log(reviews);
   
-    const ratingDistribution = [
-      { stars: 5, count: 2 },
-      { stars: 4, count: 0 },
-      { stars: 3, count: 0 },
-      { stars: 2, count: 0 },
-      { stars: 1, count: 0 },
-    ];
+  const ratingDistribution = [
+    { stars: 5, count: reviews.filter((r) => r.rating === 5).length },
+    { stars: 4, count: reviews.filter((r) => r.rating === 4).length },
+    { stars: 3, count: reviews.filter((r) => r.rating === 3).length },
+    { stars: 2, count: reviews.filter((r) => r.rating === 2).length },
+    { stars: 1, count: reviews.filter((r) => r.rating === 1).length },
+  ];
     /* const reviews = [
       { author: 'john smith', date: '08/05/2024', rating: 5, comment: 'Good' },
       { author: 'M.', date: '10/23/2023', rating: 5, comment: 'test' },
@@ -210,7 +211,8 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
           Write a review
         </button>
         <div className="space-y-4">
-          {reviews.map((review, index) => (
+        {reviews.length > 0 ? (
+          reviews.map((review, index) => (
             <div key={index} className="border-t pt-4">
               <StarRating rating={review.rating} />
               <div className="mt-2 flex flex-col md:flex-row md:items-center">
@@ -219,7 +221,10 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
               </div>
               <p className="mt-2">{review.reviewtxt}</p>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="text-center text-gray-500">No reviews available</div>
+        )}
         </div>
         {showReviewForm && <ReviewForm onClose={() => setShowReviewForm(false)} review={review} />}
       </div>
