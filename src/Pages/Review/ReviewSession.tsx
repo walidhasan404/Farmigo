@@ -148,8 +148,9 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
       console.log(review.productId);
       console.log('====================================');
       const response = await axios.get(import.meta.env.VITE_API+ `/review/product/${review.productId}`);
-      setReviews(response.data?.data || []);
-    
+      setReviews(response?.data || []);
+      console.log(response.data);
+      
     } catch (error: any) {
       toast.error(error.message || "An error occurred while fetching reviews.");
     }
