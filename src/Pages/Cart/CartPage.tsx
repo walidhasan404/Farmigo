@@ -26,9 +26,14 @@ const navigate = useNavigate();
   };
 
   // Handle changing the quantity of an item
-  const handleQuantityChange = (index: number, quantity: number) => {
+  const handleQuantityChange = (index: number, change: number) => {
     const updatedCart = [...cartItems];
-    updatedCart[index].quantity = quantity;
+    const newQuantity = updatedCart[index].quantity + change;
+  
+    // Prevent quantity from going below 1
+    if (newQuantity < 1) return;
+  
+    updatedCart[index].quantity = newQuantity;
     updateCart(updatedCart);
   };
 
