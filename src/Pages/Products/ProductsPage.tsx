@@ -23,7 +23,10 @@ const ProductsPage: React.FC = () => {
         { value: "price-desc", label: "Price: High to Low" },
         { value: "rating-asc", label: "Rating: Low to High" },
         { value: "rating-desc", label: "Rating: High to Low" },
+
     ];
+
+
 
     useMeta({
         title: 'Products',
@@ -156,7 +159,7 @@ const ProductsPage: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
-                    <ProductItem key={product._id} product={product} handleAddToCart={handleAddToCart} />
+                    <ProductItem key={product._id} product={product}  handleAddToCart={handleAddToCart} />
                    /*  <div key={product._id} className="bg-white rounded-lg overflow-hidden border transform transition duration-500 ease-in-out">
                         <Link to={`/products/${product._id}`} className="relative block">
                             {product.rating && (
