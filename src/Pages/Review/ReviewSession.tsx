@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
@@ -43,7 +43,8 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
           productId,
           orderNo,
       };
-
+  console.log(reviewData);
+  
       try {
           // Send the review data to the backend
           await axios.post(import.meta.env.VITE_API + '/review/create', reviewData);
@@ -124,13 +125,41 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
     );
   }
   
+  interface Review {
+    productId: string;
+    rating: number;
+    customer_name: string;
+    review_date: string;
+    reviewtxt: string;
+  }
  export function ReviewsContent({ review }: { review: any }) {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const navigate  = useNavigate();
   const { userAuth }  = useAuth()
   const token = userAuth?.token
     const [showReviewForm, setShowReviewForm] = useState(false);
     const overallRating = 5.00;
     const totalReviews = 2;
+
+    // Fetch reviews from API
+  const getReview = async () => {
+    try {
+      console.log('====================================');
+      console.log(review.productId);
+      console.log('====================================');
+      const response = await axios.get(`${import.meta.env.VITE_API}/review/product/${review.productId}`);
+      setReviews(response.data.data);
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred while fetching reviews.");
+    }
+  };
+
+  useEffect(() => {
+    getReview();
+  }, [review.productId]);
+
+  console.log(reviews);
+  
     const ratingDistribution = [
       { stars: 5, count: 2 },
       { stars: 4, count: 0 },
@@ -138,10 +167,10 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
       { stars: 2, count: 0 },
       { stars: 1, count: 0 },
     ];
-    const reviews = [
+    /* const reviews = [
       { author: 'john smith', date: '08/05/2024', rating: 5, comment: 'Good' },
       { author: 'M.', date: '10/23/2023', rating: 5, comment: 'test' },
-    ];
+    ]; */
   
     return (
       <div className="space-y-4">
@@ -185,10 +214,10 @@ export function StarRating({ rating, setRating }: { rating: number; setRating?: 
             <div key={index} className="border-t pt-4">
               <StarRating rating={review.rating} />
               <div className="mt-2 flex flex-col md:flex-row md:items-center">
-                <span className="font-bold">{review.author}</span>
-                <span className="text-gray-500 md:ml-2">{review.date}</span>
+                <span className="font-bold">{review.customer_name}</span>
+                <span className="text-gray-500 md:ml-2">{review.review_date}</span>
               </div>
-              <p className="mt-2">{review.comment}</p>
+              <p className="mt-2">{review.reviewtxt}</p>
             </div>
           ))}
         </div>
