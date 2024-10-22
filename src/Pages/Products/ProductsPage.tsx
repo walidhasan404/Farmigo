@@ -221,6 +221,7 @@ const ProductsPage: React.FC = () => {
             <div className="flex justify-center mt-6">
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
+                        title="button"
                         key={index + 1}
                         onClick={() => paginate(index + 1)}
                         className={`mx-1 px-4 py-2 rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
