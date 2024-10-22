@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import { authWithGoogle } from "../Authentication/AuthProvider/firebase.config";
 import axios from "axios";
-import { User } from "firebase/auth"; // Import the correct User type
 import toast from "react-hot-toast";
 import { storeInSession } from "../common/session";
 import { AuthContext } from "../Authentication/AuthProvider/AuthContext";
+import { User } from "firebase/auth";
 
 const Oath: React.FC = () => {
   const authContext = useContext(AuthContext);

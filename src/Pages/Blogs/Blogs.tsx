@@ -15,7 +15,7 @@ interface Blog {
   title: string;
   content: string;
   translatedTitle?: string;
-  translatedContent?: string; // To store translated content
+  translatedContent?: string;
   author: Author;
   categories: Category[];
   createdAt: string;
@@ -25,8 +25,8 @@ interface Blog {
 
 const BlogCard: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [isTranslated, setIsTranslated] = useState<{ [key: string]: boolean }>({}); // To track translation status for each blog
-  const [isLoading, setIsLoading] = useState<{ [key: string]: boolean }>({}); // To track loading state for each blog
+  const [isTranslated, setIsTranslated] = useState<{ [key: string]: boolean }>({});
+  const [isLoading, setIsLoading] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -44,7 +44,6 @@ const BlogCard: React.FC = () => {
     fetchBlogs();
   }, []);
 
-  // Simulate translation (replace with actual translation API call)
   const translateContent = async (text: string) => {
     const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|bn`);
     const data = await response.json();
@@ -58,10 +57,10 @@ const BlogCard: React.FC = () => {
       setIsLoading((prevState) => ({
         ...prevState,
         [id]: true,
-      })); // Set loading to true
+      })); 
 
-      const translatedTitle = await translateContent(title); // Get translated title
-      const translatedContent = await translateContent(content); // Get translated content
+      const translatedTitle = await translateContent(title); 
+      const translatedContent = await translateContent(content); 
       setBlogs((prevBlogs) =>
         prevBlogs.map((blog) =>
           blog._id === id
@@ -73,7 +72,7 @@ const BlogCard: React.FC = () => {
       setIsLoading((prevState) => ({
         ...prevState,
         [id]: false,
-      })); // Set loading to false after translation is done
+      })); 
     }
 
     setIsTranslated((prevState) => ({

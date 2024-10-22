@@ -71,7 +71,7 @@ const ProductDetails = () => {
 
   const toggleTranslate = async () => {
     if (!isTranslated && product) {
-      setTranslating(true); // Start loading
+      setTranslating(true);
       try {
         const translatedName = await translateContent(product.product_name);
         const translatedDescription = await translateContent(product.description);
@@ -84,11 +84,11 @@ const ProductDetails = () => {
       } catch (err) {
         console.error("Translation error", err);
       } finally {
-        setTranslating(false); // Stop loading
+        setTranslating(false);
       }
     }
 
-    setIsTranslated(!isTranslated); // Toggle translation state
+    setIsTranslated(!isTranslated); 
   };
 
   const handleAddToCart = (product: Product, quantity: number) => {

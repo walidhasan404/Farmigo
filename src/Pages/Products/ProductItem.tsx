@@ -9,7 +9,7 @@ interface ProductItemProps {
 
 
 const ProductItem: React.FC<ProductItemProps> = ({ product, handleAddToCart }) => {
-    const [quantity, setQuantity] = useState(1); // State to manage quantity
+    const [quantity, setQuantity] = useState(1);
 
     return (
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
