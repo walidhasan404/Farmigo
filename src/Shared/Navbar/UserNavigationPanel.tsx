@@ -2,12 +2,15 @@
 import { Link } from "react-router-dom";
 import { removeFromSession } from "../../common/session";
 import { useAuth } from "../../Authentication/AuthProvider/AuthContext";
+import useGetData from "../../common/Hooks/useGetData";
 
 
 const UserNavigationPanel = () => {
     const {userAuth, setUserAuth} = useAuth()
     
     const name = userAuth?.name;
+    const token = userAuth?.token // Fetch token from local storage
+    const { userRole } = useGetData(token);
     const signOutUser = () =>{
         removeFromSession("user")
         setUserAuth(null)
@@ -20,7 +23,7 @@ const UserNavigationPanel = () => {
           {/* Add more content here */}
           Profile
         </Link>
-        <Link to={`/dashboard?user=${name}`} className="link pl-8 py-4">
+        <Link to={`/dashboard/${userRole}?user=${name}`} className="link pl-8 py-4">
           {/* Add more content here */}
           Dashboard
         </Link>

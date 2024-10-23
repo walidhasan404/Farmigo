@@ -1,85 +1,65 @@
-import { useState } from 'react'
-import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useAuth } from '../../../Authentication/AuthProvider/AuthContext';
 
-
-type Review = {
-  id: string
-  name: string
-  review: string
-  rating: number
-  productName: string
-  productImage: string
+interface Product {
+  _id: string;
+  product_name: string;
+  images: string[];
 }
-
-const reviews: Review[] = [
-  { 
-    id: '1', 
-    name: 'John Doe', 
-    review: 'Great product!', 
-    rating: 5, 
-    productName: 'Wireless Headphones',
-    productImage: '/placeholder.svg?height=80&width=80'
-  },
-  { 
-    id: '2', 
-    name: 'Jane Smith', 
-    review: 'Good value for money.', 
-    rating: 4, 
-    productName: 'Smart Watch',
-    productImage: '/placeholder.svg?height=80&width=80'
-  },
-  { 
-    id: '3', 
-    name: 'Bob Johnson', 
-    review: 'Could be better.', 
-    rating: 3, 
-    productName: 'Bluetooth Speaker',
-    productImage: '/placeholder.svg?height=80&width=80'
-  },
-  { 
-    id: '4', 
-    name: 'Alice Brown', 
-    review: 'Excellent service!', 
-    rating: 5, 
-    productName: 'Fitness Tracker',
-    productImage: '/placeholder.svg?height=80&width=80'
-  },
-  { 
-    id: '5', 
-    name: 'Charlie Davis', 
-    review: 'Not bad, but not great.', 
-    rating: 3, 
-    productName: 'Wireless Earbuds',
-    productImage: '/placeholder.svg?height=80&width=80'
-  },
-  { 
-    id: '6', 
-    name: 'Eva Wilson', 
-    review: 'Impressive quality!', 
-    rating: 5, 
-    productName: 'Noise-Cancelling Headphones',
-    productImage: '/placeholder.svg?height=80&width=80'
-  },
-  { 
-    id: '7', 
-    name: 'Frank Miller', 
-    review: 'Decent product, but overpriced.', 
-    rating: 3, 
-    productName: 'Smartwatch Pro',
-    productImage: '/placeholder.svg?height=80&width=80'
-  },
-]
+type Review = {
+  _id: string;
+  customer_name: string;
+  review_text: string;
+  rating: number;
+  product_id: Product;
+};
 
 export default function ReviewList() {
-  const [currentPage, setCurrentPage] = useState(1)
-  const reviewsPerPage = 5
-  const totalPages = Math.ceil(reviews.length / reviewsPerPage)
+  const [reviews, setReviews] = useState<Review[]>([]); // State to store the fetched reviews
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true); // State for loading status
+  const reviewsPerPage = 5;
+  const { userAuth }  = useAuth()
+  const token = userAuth?.token 
+  // Fetch reviews from server when the component mounts
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(import.meta.env.VITE_API + '/review/admin/all',
+          {
+            headers: {
+              'Content-Type': 'application/json', // Fixed the missing quote here
+              'auth-token': token // Ensure that `token` contains a valid value
+            }
+          }
+        );
 
-  const indexOfLastReview = currentPage * reviewsPerPage
-  const indexOfFirstReview = indexOfLastReview - reviewsPerPage
-  const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview)
+        setReviews(response.data); // Assuming reviews are in `response.data.reviews`
+        console.log('====================================');
+        console.log(response.data);
+        console.log('====================================');
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReviews();
+  }, []);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
+  const totalPages = Math.ceil(reviews.length / reviewsPerPage);
+  const indexOfLastReview = currentPage * reviewsPerPage;
+  const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+  const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  if (loading) {
+    return <div className="text-center py-4">Loading reviews...</div>;
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -97,37 +77,35 @@ export default function ReviewList() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {currentReviews.map((review) => (
-                <tr key={review.id}>
+                <tr key={review._id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-20 w-20">
+                      <div className="flex-shrink-0 h-12 w-12">
                         <img
-                          className="h-20 w-20 rounded-full"
-                          src={review.productImage}
-                          alt={review.productName}
-                          width={80}
-                          height={80}
+                          className="h-12 w-12 rounded-full"
+                          src={review.product_id.images[0]}
+                          alt={review.product_id.product_name}
+                          width={40}
+                          height={40}
                         />
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{review.productName}</div>
+                        <div className="text-sm font-medium text-gray-900">{review.product_id.product_name}</div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{review.name}</div>
+                    <div className="text-sm font-medium text-gray-900">{review.customer_name}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-500">{review.review}</div>
+                    <div className="text-sm text-gray-500">{review.review_text}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-5 h-5 ${
-                            i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                          }`}
+                          className={`w-5 h-5 ${i < review.rating ? 'text-green-400 fill-current' : 'text-gray-300'}`}
                         />
                       ))}
                     </div>
@@ -158,5 +136,5 @@ export default function ReviewList() {
         </button>
       </div>
     </div>
-  )
+  );
 }

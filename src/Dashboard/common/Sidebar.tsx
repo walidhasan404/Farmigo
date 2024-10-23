@@ -57,7 +57,7 @@ const Sidebar = () => {
         )
     }
             {
-                userRole === "farmer" ? (
+                userRole === "farmer" && (
                     <>
                     <Link to={'/dashboard/farmer/products'} className="flex items-center text-gray-400">
                         <i className="fas fa-shopping-cart mr-3"></i>
@@ -72,7 +72,11 @@ const Sidebar = () => {
                         <span>Customers</span>
                     </Link>
                     </>
-                ):(
+                )
+}
+                
+             {  userRole === 'customer' &&
+                (
                     <>
                     <Link to={'/dashboard/delivary-add'} className="flex items-center text-gray-400">
                         <i className="fas fa-shopping-cart mr-3"></i>

@@ -11,7 +11,6 @@ import Weather from "../Pages/Weather/Weather";
 import Dashboard from "../Dashboard/index";
 import ProfileUpdate from "../Dashboard/common/Profile/Profile";
 import CheckoutForm from "../Pages/checkout/CheckoutForm";
-import Dashboards from "../Dashboard/layouts/Dashboard";
 import ProductsList from "../Dashboard/components/Farmer/ProductsList";
 import AddProducts from "../Dashboard/components/Farmer/AddProducts";
 import OrderList from "../Dashboard/components/Farmer/OrderList";
@@ -19,88 +18,74 @@ import AllProducts from "../Dashboard/components/Admin/AllProducts";
 import AllUsers from "../Dashboard/components/Admin/AllUsers";
 import BlogsPage from "../Dashboard/components/Admin/BlogPage";
 import ReviewList from "../Dashboard/components/Admin/ReviewLIst";
+import Unauthorized from "../Shared/Unauthorized";
+import ProtectedRoute from "../Shared/ProtectedRoute";
+import AdminDashboard from "../Dashboard/components/Admin/AdminDashboard";
+import FarmerDashboard from "../Dashboard/components/Farmer/FarmerDashboard";
 
 
+// Define your routes
 export const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Main />,
-        children: [
-            {
-                path: "/",
-                element: <Home />,
-            },
-            {
-                path: "/products",
-                element: <ProductsPage />
-            },
-           
-            {
-                path: "/blogs",
-                element: <BlogCard />
-            },
-            {
-                path: "/cart",
-                element: <CartPage />
-            },
-            {
-                path: "/checkout",
-                element: <CheckoutForm />
-            },
-            /* {
-                path: "/products/grain & cereal",
-                element: <Grain />
-            },
-            {
-                path: "/products/dairy",
-                element: <Dairy />
-            },
-            {
-                path: "/products/poultry",
-                element: <Poultry />
-            },
-            {
-                path: "/products/fruit",
-                element: <Fruit />
+  {
+    path: "/",
+    element: <Main />,
+    children: [
+      { path: "/", element: <Home /> },
+      { path: "/products", element: <ProductsPage /> },
+      { path: "/blogs", element: <BlogCard /> },
+      { path: "/cart", element: <CartPage /> },
+      { path: "/checkout", element: <CheckoutForm /> },
+      { path: "/products/:id", element: <ProductDetails /> },
+      { path: "/weather", element: <Weather /> },
+    ]
+  },
+  { path: "/login", element: <Login /> },
+  { path: "/register", element: <RegisterPage /> },
+  { path: "/unauthorized", element: <Unauthorized /> },
 
-            }, */
-            {
-                path: "/products/:id",
-                element: <ProductDetails />
-            },
-            {
-                path: "/weather",
-                element: <Weather />
-            },
-        ]
-    },
-    {
-      path: "/login",
-      element: <Login/>,
-    },
-    {
-      path: "/register",
-      element: <RegisterPage/>,
-    },
-    {
-      path: `/dashboard`,
-      element: <Dashboard/>,
-      children: [
-        { path: "/dashboard", element: <Dashboards /> },
-        { path: "profile", element: <ProfileUpdate /> },
-        { path: "farmer/products", element: <ProductsList/> },
-        { path: "farmer/add-products", element: <AddProducts/> }, 
-        { path: "farmer/orders", element: <OrderList/> }, 
-
-        /* admin */
-        { path: "admin/products", element: <AllProducts /> },
-        { path: "admin/blogs", element: <BlogsPage /> }, 
-        { path: "admin/users", element: <AllUsers /> }, 
-        { path: "admin/reviews", element: <ReviewList/> }, 
-
-
-
-
-      ]
-    }
-  ]);
+  {
+    path: "/dashboard/farmer",
+    element: (
+      <ProtectedRoute requiredRole="farmer">
+        <Dashboard />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "", element: <FarmerDashboard /> },
+      { path: "profile", element: <ProfileUpdate /> },
+      { path: "farmer/products", element: <ProductsList /> },
+      { path: "farmer/add-products", element: <AddProducts /> },
+      { path: "farmer/orders", element: <OrderList /> },
+    ]
+  },
+  {
+    path: "/dashboard/admin",
+    element: (
+      <ProtectedRoute requiredRole="admin">
+        <Dashboard />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "", element: <AdminDashboard /> },
+      { path: "products", element: <AllProducts /> },
+      { path: "blogs", element: <BlogsPage /> },
+      { path: "users", element: <AllUsers /> },
+      { path: "reviews", element: <ReviewList /> },
+    ]
+  },
+  {
+    path: "/dashboard/customer",
+    element: (
+      <ProtectedRoute requiredRole="customer">
+        <Dashboard />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "", element: <AdminDashboard /> },
+      { path: "profile", element: <ProfileUpdate /> },
+      { path: "orders", element: <OrderList /> },  // Customer-specific orders
+      // Add any other customer-specific routes here
+    ]
+  }
+  
+]);
