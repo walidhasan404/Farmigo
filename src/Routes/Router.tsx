@@ -18,6 +18,8 @@ import OrderList from "../Dashboard/components/Farmer/OrderList";
 import AllProducts from "../Dashboard/components/Admin/AllProducts";
 import AllUsers from "../Dashboard/components/Admin/AllUsers";
 import BlogsPage from "../Dashboard/components/Admin/BlogPage";
+import ReviewList from "../Dashboard/components/Admin/ReviewList";
+
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -93,6 +95,8 @@ export const router = createBrowserRouter([
         { path: "admin/products", element: <AllProducts /> },
         { path: "admin/blogs", element: <BlogsPage /> }, 
         { path: "admin/users", element: <AllUsers /> }, 
+        { path: "admin/reviews", element: <ReviewList/> }, 
+
 
 
 

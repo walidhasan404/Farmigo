@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Search, ChevronDown, MoreHorizontal, Loader2 } from 'lucide-react'
+import axios from 'axios'
 
 interface Order {
   id: string
@@ -24,12 +25,8 @@ export default function OrderList() {
       try {
         // Simulating API call with setTimeout
         await new Promise(resolve => setTimeout(resolve, 1500))
-        const response = await fetch('/api/orders')
-        if (!response.ok) {
-          throw new Error('Failed to fetch orders')
-        }
-        const data = await response.json()
-        setOrders(data)
+        const response = await axios.get(import.meta.env.VITE_API+'orders')
+        setOrders(response.data)
       } catch (error) {
         console.error('Error fetching orders:', error)
       } finally {

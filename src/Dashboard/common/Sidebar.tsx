@@ -49,6 +49,10 @@ const Sidebar = () => {
                 <i className="fas fa-shopping-cart mr-3"></i>
                 <span>Orders</span>
             </Link>
+            <Link to={'/dashboard/admin/reviews'} className="flex items-center text-gray-400">
+                <i className="fas fa-shopping-cart mr-3"></i>
+                <span>Reviews</span>
+            </Link>
             </>
         )
     }
