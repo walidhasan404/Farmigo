@@ -63,14 +63,15 @@ const CheckoutForm = () => {
   };
 
   const shippingCost = shippingCosts[shippingMethod];
-  const total = subtotal + shippingCost || 0;
+  const totalUnformated = subtotal + shippingCost || 0;
+  const total = totalUnformated.toFixed(2)
 
   // Fetch payment intent from the backend and set clientSecret
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
         const { data } = await axios.post(
-          "https://farmigo-backend.onrender.com/api/order/create-payment-intent",
+          "http://localhost:3000/api/order/create-payment-intent",
           { price: total }
         );
         setClientSecret(data.clientSecret);
@@ -79,7 +80,7 @@ const CheckoutForm = () => {
         toast.error("Failed to create payment intent.");
       }
     };
-    if (total > 0) createPaymentIntent();
+    if (parseFloat(total) > 0) createPaymentIntent();
   }, [total]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -165,7 +166,7 @@ const CheckoutForm = () => {
 
 
         // Post the payment data and order details to the backend
-        await axios.post("https://farmigo-backend.onrender.com/api/order/new-collection", {
+        await axios.post("http://localhost:3000/api/order/new-collection", {
           ...paymentData,
         })
         .then((res) => {
@@ -173,7 +174,7 @@ const CheckoutForm = () => {
 
            axios
             .post(
-              "https://farmigo-backend.onrender.com/api/order/create-checkout",
+              "http://localhost:3000/api/order/create-checkout",
               {...paymentData, orderId: res.data.orderId},
               { withCredentials: true }
             )
@@ -359,7 +360,7 @@ const CheckoutForm = () => {
             </div>
             <div className="flex justify-between font-bold">
               <p>Total</p>
-              <p>৳{total.toFixed(2)}</p>
+              <p>৳{total}</p>
             </div>
 
             <form onSubmit={handleSubmit}>

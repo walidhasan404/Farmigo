@@ -18,6 +18,8 @@ import OrderList from "../Dashboard/components/Farmer/OrderList";
 import AllProducts from "../Dashboard/components/Admin/AllProducts";
 import AllUsers from "../Dashboard/components/Admin/AllUsers";
 import BlogsPage from "../Dashboard/components/Admin/BlogPage";
+import Success from "../Pages/checkout/Success";
+import Cancel from "../Pages/checkout/Cancel";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -44,6 +46,15 @@ export const router = createBrowserRouter([
                 path: "/checkout",
                 element: <CheckoutForm />
             },
+            {
+                path: "/order/success",
+                element: <Success/>
+            },
+            {
+                path: "/order/cancel",
+                element: <Cancel/>
+            },
+
             /* {
                 path: "/products/grain & cereal",
                 element: <Grain />
