@@ -18,7 +18,8 @@ import OrderList from "../Dashboard/components/Farmer/OrderList";
 import AllProducts from "../Dashboard/components/Admin/AllProducts";
 import AllUsers from "../Dashboard/components/Admin/AllUsers";
 import BlogsPage from "../Dashboard/components/Admin/BlogPage";
-import ReviewList from "../Dashboard/components/Admin/ReviewList";
+import ReviewList from "../Dashboard/components/Admin/ReviewLIst";
+
 
 export const router = createBrowserRouter([
     {
