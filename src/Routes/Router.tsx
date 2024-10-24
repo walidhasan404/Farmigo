@@ -23,6 +23,8 @@ import ProtectedRoute from "../Shared/ProtectedRoute";
 import AdminDashboard from "../Dashboard/components/Admin/AdminDashboard";
 import FarmerDashboard from "../Dashboard/components/Farmer/FarmerDashboard";
 import AllOrderList from "../Dashboard/components/Admin/AllOrderList";
+import UserDashboard from "../Dashboard/components/User/UserDashboard";
+import CartTable from "../Dashboard/components/User/CartTable";
 
 
 // Define your routes
@@ -54,9 +56,9 @@ export const router = createBrowserRouter([
     children: [
       { path: "", element: <FarmerDashboard /> },
       { path: "profile", element: <ProfileUpdate /> },
-      { path: "farmer/products", element: <ProductsList /> },
-      { path: "farmer/add-products", element: <AddProducts /> },
-      { path: "farmer/orders", element: <OrderList /> },
+      { path: "products", element: <ProductsList /> },
+      { path: "add-products", element: <AddProducts /> },
+      { path: "orders", element: <OrderList /> },
     ]
   },
   {
@@ -83,9 +85,9 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: "", element: <AdminDashboard /> },
+      { path: "", element: <UserDashboard /> },
       { path: "profile", element: <ProfileUpdate /> },
-      { path: "orders", element: <OrderList /> },  // Customer-specific orders
+      { path: "carts", element: <CartTable /> },  // Customer-specific orders
       // Add any other customer-specific routes here
     ]
   }

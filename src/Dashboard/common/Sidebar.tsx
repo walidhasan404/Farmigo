@@ -18,9 +18,9 @@ const Sidebar = ({ className = '' }: { className?: string }) => {
   return (
     <div className={`bg-indigo-800 text-white ${className}`}>
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-6">Velzon</h2>
+      <Link to={'/'} className="text-2xl font-bold mb-6">Farmigo</Link>
       <nav>
-      <ul className="space-y-4">
+      <ul className="space-y-4 p-2 mt-5">
            
            {
        userRole === "admin" && (
@@ -74,18 +74,15 @@ const Sidebar = ({ className = '' }: { className?: string }) => {
             {  userRole === 'customer' &&
                (
                    <>
-                   <Link to={'/dashboard/delivary-add'} className="flex items-center text-gray-400">
-                       <i className="fas fa-shopping-cart mr-3"></i>
-                       <span>Delivary Address</span>
-                   </Link>
-                   <Link to={'/dashboard/carts'} className="flex items-center text-gray-400">
+                
+                   <Link to={'/dashboard/customer/carts'} className="flex items-center text-gray-400">
                        <i className="fas fa-shopping-cart mr-3"></i>
                        <span>Carts</span>
                    </Link>
                    </>
                )
            }
-           <Link to={'/dashboard/profile'} className="flex items-center text-gray-400">
+           <Link to={`/dashboard/${userRole}/profile`} className="flex items-center text-gray-400">
                <i className="fas fa-user mr-3"></i>
                <span>Profile</span>
            </Link>

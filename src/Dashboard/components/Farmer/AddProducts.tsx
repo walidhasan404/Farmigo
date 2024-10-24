@@ -38,9 +38,6 @@ export default function AddProducts() {
       if (token !== null) { // If the token is valid and you have access to the product data then send it to the backend   
         const tokenId = JSON.parse(token); // Get auth token from local storage or context
       
-      console.log('====================================');
-      console.log(tokenId.token);
-      console.log('====================================');
       const response = await axios.post(import.meta.env.VITE_API+'/products/create', productData, {
         headers: {
           'Content-Type': 'application/json',
