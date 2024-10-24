@@ -17,7 +17,7 @@ interface Message {
   img: string
 }
 
-const socket = io('http://localhost:3000'); 
+const socket = io(import.meta.env.VITE_API); 
 
 const ChatApp: React.FC<ChatProps> = ({customer_id, farmer_id, userImg}) => {
 

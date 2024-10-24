@@ -26,13 +26,14 @@ const Sidebar = () => {
     <nav className="flex-1 px-4">
         
         <ul className="space-y-4">
-            <Link to={'/dashboard'} className="flex items-center text-blue-600">
-                <i className="fas fa-home mr-3"></i>
-                <span>Dashboard</span>
-            </Link>
+           
             {
         userRole === "admin" && (
             <> 
+             <Link to={'/dashboard/admin'} className="flex items-center text-blue-600">
+                <i className="fas fa-home mr-3"></i>
+                <span>Dashboard</span>
+            </Link>
             <Link to={'/dashboard/admin/users'} className="flex items-center text-gray-400">
                 <i className="fas fa-shopping-cart mr-3"></i>
                 <span>Users</span>
@@ -45,7 +46,7 @@ const Sidebar = () => {
                 <i className="fas fa-shopping-cart mr-3"></i>
                 <span>Blogs</span>
             </Link>
-            <Link to={'/dashboard/admin/blogs'} className="flex items-center text-gray-400">
+            <Link to={'/dashboard/admin/orders'} className="flex items-center text-gray-400">
                 <i className="fas fa-shopping-cart mr-3"></i>
                 <span>Orders</span>
             </Link>

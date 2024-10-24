@@ -22,6 +22,7 @@ import Unauthorized from "../Shared/Unauthorized";
 import ProtectedRoute from "../Shared/ProtectedRoute";
 import AdminDashboard from "../Dashboard/components/Admin/AdminDashboard";
 import FarmerDashboard from "../Dashboard/components/Farmer/FarmerDashboard";
+import AllOrderList from "../Dashboard/components/Admin/AllOrderList";
 
 
 // Define your routes
@@ -70,6 +71,7 @@ export const router = createBrowserRouter([
       { path: "products", element: <AllProducts /> },
       { path: "blogs", element: <BlogsPage /> },
       { path: "users", element: <AllUsers /> },
+      { path: "orders", element: <AllOrderList /> },
       { path: "reviews", element: <ReviewList /> },
     ]
   },
