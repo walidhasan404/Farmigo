@@ -109,8 +109,10 @@ export default function AdminDashboard() {
             </div>
             <div className="mt-4 space-y-2">
               {['Canada', 'Greenland', 'Russia'].map((country, index) => (
-                <div key={index} className="flex items-center">
+                <div key={index} className="flex items-center gap-2">
+                  <div> {country}</div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    
                     <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${[75, 47, 82][index]}%` }}></div>
                   </div>
                   <span className="ml-2 text-sm text-gray-600">{[75, 47, 82][index]}%</span>
@@ -125,18 +127,16 @@ export default function AdminDashboard() {
             <h2 className="text-xl font-bold mb-4">Top 10 Categories</h2>
             <ul className="space-y-2">
               {[
-                { name: 'Mobile & Accessories', value: 10294 },
-                { name: 'Desktop', value: 6256 },
-                { name: 'Electronics', value: 3479 },
-                { name: 'Home & Furniture', value: 2275 },
-                { name: 'Grocery', value: 1950 },
-                { name: 'Fashion', value: 1582 },
-                { name: 'Appliances', value: 1037 },
-                { name: 'Beauty, Toys & More', value: 924 },
-                { name: 'Food & Drinks', value: 701 },
-                { name: 'Toys & Games', value: 239 },
+                { name: 'Vegetables', value: 10294 },
+                { name: 'Fruits', value: 6256 },
+                { name: 'Dairy & Meats', value: 3479 },
+                { name: 'Poultry', value: 2275 },
+                { name: 'Honey & Jam', value: 1950 },
+                { name: 'Fishes', value: 1582 },
+                { name: 'Grains & Cereal', value: 1037 },
+             
               ].map((category, index) => (
-                <li key={index} className="flex justify-between items-center">
+                <li key={index} className="flex justify-between items-center py-1">
                   <span>{category.name}</span>
                   <span className="font-medium">{category.value.toLocaleString()}</span>
                 </li>
